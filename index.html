@@ -56,16 +56,18 @@ body{background:radial-gradient(1300px 900px at 50% -12%,#241a6b,#120a38 55%,#07
 .a-wind {--a1:#1e6e3c;--a2:#0a2c17;--acc:#7de88f}
 .a-spl  {--a1:#2a5a6e;--a2:#122a3c;--acc:#8fe8ff}
 .a-trap {--a1:#6e2a5a;--a2:#3c1230;--acc:#ff8fe0}
-.cname{font-family:Lalezar;font-size:calc(var(--cw)*.14);color:#ffe9a8;background:rgba(0,0,0,.5);padding:1px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;line-height:1.3}
-.cart{flex:1;display:grid;place-items:center;position:relative}
-.cart::before{content:'';position:absolute;inset:6%;border-radius:50%;background:radial-gradient(circle,var(--acc) 0%,transparent 60%);opacity:.4}
-.cart span{font-size:calc(var(--cw)*.44);filter:drop-shadow(0 3px 4px rgba(0,0,0,.6));position:relative}
+.cname{font-family:Lalezar;font-size:calc(var(--cw)*.14);color:#ffe9a8;background:rgba(0,0,0,.55);padding:1px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;line-height:1.3}
+.cart{flex:1;display:grid;place-items:center;position:relative;overflow:hidden;margin:2px;border-radius:3px;background:rgba(0,0,0,.25)}
+.cart::before{content:'';position:absolute;inset:0;background:radial-gradient(circle,var(--acc) 0%,transparent 70%);opacity:.25;pointer-events:none;z-index:0}
+.cart img{width:100%;height:100%;object-fit:cover;display:block;position:relative;z-index:1;transition:transform .25s}
+.card:hover .cart img{transform:scale(1.08)}
+.cart span{font-size:calc(var(--cw)*.44);filter:drop-shadow(0 3px 4px rgba(0,0,0,.6));position:relative;z-index:1}
 .lvs{text-align:center;font-size:calc(var(--cw)*.105);color:var(--gold);letter-spacing:1px;text-shadow:0 1px 2px #000;line-height:1}
 .stats{display:flex;justify-content:space-between;padding:2px 4px 3px;gap:3px}
 .stats i{font-style:normal;font-weight:800;font-size:calc(var(--cw)*.13);padding:1px 5px;border-radius:6px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18)}
 .stats .atk{color:#ff8d6b}.stats .def{color:#7fc4ff}.stats .spl{color:#8fe8ff;margin-inline:auto;font-family:Lalezar}.stats .trp{color:#ff8fe0;margin-inline:auto;font-family:Lalezar}
 .stxt{font-size:calc(var(--cw)*.105);text-align:center;padding:0 3px 3px;color:#dff4ff;line-height:1.25;height:2.5em;overflow:hidden}
-.r5 .cframe::after,.r6 .cframe::after,.r7 .cframe::after{content:'';position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
+.r5 .cframe::after,.r6 .cframe::after,.r7 .cframe::after{content:'';position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;z-index:3;
  background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.55) 50%,transparent 62%);background-size:260% 260%;animation:holo 2.8s linear infinite}
 @keyframes holo{from{background-position:130% 0}to{background-position:-130% 0}}
 .r7 .cframe{border-color:var(--gold);box-shadow:0 0 16px rgba(255,210,63,.55),0 4px 10px rgba(0,0,0,.5)}
@@ -213,7 +215,7 @@ body{background:radial-gradient(1300px 900px at 50% -12%,#241a6b,#120a38 55%,#07
 <!-- العنوان -->
 <div class="screen show" id="scrTitle">
  <h1 class="logo">مبارزة الروابط</h1>
- <div class="logo-sub">⚔ DUEL RUSH — مبارزات سريعة بروح ألعاب البطاقات ⚔</div>
+ <div class="logo-sub">⚔ DUEL RUSH — نسخة الصور الحقيقية ⚔</div>
  <div class="menu-btns">
   <button class="btn big gold" id="bToSelect">⚔ ابدأ المبارزة</button>
   <div class="row2">
@@ -226,7 +228,7 @@ body{background:radial-gradient(1300px 900px at 50% -12%,#241a6b,#120a38 55%,#07
   <span class="chip on" id="tSnd">🔊 الصوت</span>
   <span class="chip" id="tFast">⏩ خصم سريع</span>
  </div>
- <div class="hint">لعبة أصلية بالكامل مستوحاة من أسلوب مبارزات السرعة: 4000 LP • 3 مناطق • تضحيات • مهارات • فخاخ</div>
+ <div class="hint">✨ البطاقات الآن تعرض صور حقيقية من الروابط! عدّل الكود بسهولة لإضافة صور أخرى.</div>
 </div>
 
 <!-- اختيار الشخصية -->
@@ -372,11 +374,19 @@ for(let i=0;i<9;i++){const m=document.createElement('div');m.className='mote';
  document.body.appendChild(m)}
 
 /* ═══ البطاقات ═══ */
+// ── 💡 لإضافة صورة لأي بطاقة: أضف حقل "img" مع رابط الصورة ──
+// مثال: knight:{n:'فارس الفجر',..., img:'https://رابط_صورتك.jpg',...}
+// البطاقات التي ليس لها img ستستخدم ic (الإيموجي) كصورة احتياطية
 const CARDS={
  wisp:{n:'ومضة النور',t:'m',a:'light',lv:1,atk:400,def:300,ic:'✨',tx:'شرارة صغيرة من الفجر.'},
  imp:{n:'عفريت الرماد',t:'m',a:'fire',lv:2,atk:700,def:500,ic:'👺',tx:'شقيّ لا يُطفأ.'},
  guard:{n:'جني الترس',t:'m',a:'light',lv:2,atk:500,def:1000,ic:'🛡️',tx:'حارس صغير بقلب كبير.'},
- knight:{n:'فارس الفجر',t:'m',a:'light',lv:3,atk:1300,def:900,ic:'⚔️',tx:'سيفه أول ما يلمع صباحًا.'},
+ // ⭐ بطاقة فارس الفجر بالصورة الحقيقية من الرابط المعطى
+ knight:{
+  n:'فارس الفجر',t:'m',a:'light',lv:3,atk:1300,def:900,ic:'⚔️',
+  img:'https://cdn.phototourl.com/free/2026-08-10-92c231a1-210b-4522-9beb-e83e15065495.jpg',
+  tx:'سيفه أول ما يلمع صباحًا. ⭐ صورة حقيقية!'
+ },
  witch:{n:'ساحرة الغسق',t:'m',a:'dark',lv:3,atk:1200,def:1100,ic:'🔮',fx:'flipdraw',tx:'🔄 عند الكشف: اسحب بطاقة.'},
  wolf:{n:'ذئب الجمر',t:'m',a:'fire',lv:3,atk:1500,def:700,ic:'🐺',fx:'vamp',tx:'🩸 يداويك بقدر ضرر المعركة.'},
  raptor:{n:'رابتور الظل',t:'m',a:'dark',lv:3,atk:1400,def:800,ic:'🦖',tx:'يصطاد في العتمة.'},
@@ -389,7 +399,7 @@ const CARDS={
  wraith:{n:'شبح الليل',t:'m',a:'dark',lv:5,atk:1900,def:1500,ic:'👻',fx:'recov',tx:'♻ إذا دُمّر: يعود إلى يدك.'},
  leader:{n:'قائد الطليعة',t:'m',a:'light',lv:5,atk:1900,def:1400,ic:'🎖️',fx:'aura',tx:'⚜ وحوشك الأخرى +300 هجوم.'},
  cometD:{n:'تنين الشهاب',t:'m',a:'fire',lv:6,atk:2300,def:1600,ic:'🐉',fx:'pierce',tx:'🗡 ثاقب — ذيله مذنب.'},
- solD:{n:'تنين الفجر المشع',t:'m',a:'light',lv:7,atk:2500,def:2000,ic:'🐲',tx:'إمبراطور الضوء. يتطلبضحيتين.'},
+ solD:{n:'تنين الفجر المشع',t:'m',a:'light',lv:7,atk:2500,def:2000,ic:'🐲',tx:'إمبراطور الضوء. يتطلب ضحيتين.'},
  nightL:{n:'سيد الليل السحيق',t:'m',a:'dark',lv:7,atk:2450,def:2100,ic:'🌑',fx:'venge',tx:'💢 إذا دُمّر: 800 ضرر للخصم.'},
  heal:{n:'ضوء الشفاء',t:'s',a:'spl',ic:'💫',fx:'heal',tx:'استعد 1000 نقطة حياة.'},
  bolt:{n:'حكم السماء',t:'s',a:'spl',ic:'⚡',fx:'bolt',tx:'دمّر أقوى وحش مكشوف لدى الخصم.'},
@@ -449,10 +459,17 @@ function draw(side,n){const P=S[side];
   if(P.hand.length>=8){P.gy++;setMsg('🔥 اليد ممتلئة — البطاقة إلى المقبرة')}else P.hand.push(c)}}
 
 /* ═══ العرض ═══ */
+// ── ✨ الدالة المعدّلة لعرض الصور ──
 function faceHtml(c){
- return `<div class="cname">${c.n}</div><div class="cart"><span>${c.ic}</span></div>`+
- (c.t==='m'?`<div class="lvs">${'✦'.repeat(c.lv)}</div><div class="stats"><i class="atk">⚔${c.atk}</i><i class="def">🛡${c.def}</i></div>`
- :`<div class="stats"><i class="${c.t==='s'?'spl':'trp'}">${c.t==='s'?'🌀 تعويذة':'🪤 فخ'}</i></div><div class="stxt">${c.tx}</div>`)}
+ // إذا كانت البطاقة تملك رابط صورة → اعرضها، وإلا استخدم الإيموجي
+ const artContent = c.img
+   ? `<div class="cart"><img src="${c.img}" alt="${c.n}" onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.style.display='grid')"><span style="display:none">${c.ic}</span></div>`
+   : `<div class="cart"><span>${c.ic}</span></div>`;
+ return `<div class="cname">${c.n}</div>${artContent}`+
+ (c.t==='m'
+   ? `<div class="lvs">${'✦'.repeat(c.lv)}</div><div class="stats"><i class="atk">⚔${c.atk}</i><i class="def">🛡${c.def}</i></div>`
+   : `<div class="stats"><i class="${c.t==='s'?'spl':'trp'}">${c.t==='s'?'🌀 تعويذة':'🪤 فخ'}</i></div><div class="stxt">${c.tx}</div>`);
+}
 function monEl(slot,side){
  const c=CARDS[slot.cid];
  const hidden=side==='o'&&!slot.faceup;
@@ -565,7 +582,7 @@ async function onSummoned(side,slot){
  const op=other(side);const tr=S[op].spells.find(s=>s.cid==='t_drain');
  if(tr&&c.atk>=1500){
   const use=op==='p'?await ask('⛓ سلسلة الأرواح','الخصم استدعى '+c.n+' ('+c.atk+'⚔). هل تدمّره؟'):rnd<.85;
-  if(use&&!over){await consumeTrap(op,tr);setMsg('⛓ سلسلة الأرواح activations!');await destroySlot(side,slot)}}}
+  if(use&&!over){await consumeTrap(op,tr);setMsg('⛓ سلسلة الأرواح!');await destroySlot(side,slot)}}}
 async function consumeTrap(side,st){
  S[side].spells=S[side].spells.filter(s=>s.uid!==st.uid);S[side].gy++;
  renderAll();sfx.trap();
@@ -639,7 +656,6 @@ async function battle(aSide,aUid,tUid){
  const a=A.field.find(m=>m.uid===aUid);if(!a){busy=false;return}
  a.attacked=true;
  let t=tUid!=null?E.field.find(m=>m.uid===tUid):null;
- // ── الفخاخ عند إعلان الهجوم ──
  let cancel=false,spike=false;
  const mirror=S[def].spells.find(s=>s.cid==='t_mirror');
  if(mirror){
@@ -708,14 +724,11 @@ function aiTarget(m){
  return'hold'}
 async function aiTurn(){
  busy=true;const O=S.o;await sleep(D(900));if(over)return;
- // تثبيت الفخاخ
  for(const cid of[...O.hand]){if(O.spells.length>=3)break;const c=CARDS[cid];
   if(c.t==='t'&&rnd<.9){O.hand.splice(O.hand.indexOf(cid),1);O.spells.push({uid:++uidC,cid});
    renderAll();setMsg('👺 الخصم ثبّت بطاقة مقلوبة');sfx.flip();await sleep(D(550));if(over)return}}
- // الاستدعاء
  const sel=aiChooseSummon();
  if(sel){await aiDoSummon(sel);if(over)return;await sleep(D(500))}
- // التعاويذ
  for(const cid of[...O.hand]){
   if(over)return;const c=CARDS[cid];if(c.t!=='s'||!O.hand.includes(cid))continue;
   let use=false;
@@ -730,7 +743,6 @@ async function aiTurn(){
   if(use){O.hand.splice(O.hand.indexOf(cid),1);O.gy++;renderAll();
    banner('🌀 الخصم يرمي '+c.n,true);
    await resolveSpell('o',cid);renderAll();await sleep(D(800));if(over)return}}
- // المهارة
  const sk=foeChar.skill;
  if(!O.skill&&sk.cond(O)&&rnd<.9){
   O.skill=true;banner('✨ مهارة الخصم: '+sk.name,true);sfx.skill();await sleep(D(700));
@@ -738,7 +750,6 @@ async function aiTurn(){
   else if(sk.needTarget==='discard'){O.hand.sort((a,b)=>CARDS[a].atk-CARDS[b].atk);sk.use('o',0)}
   else sk.use('o');
   renderAll();await sleep(D(700));if(over)return}
- // القتال
  for(let g=0;g<8;g++){
   if(over)return;
   const m=O.field.find(x=>x.pos==='atk'&&!x.attacked);if(!m)break;
