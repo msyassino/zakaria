@@ -1,8 +1,8 @@
 /* ===================================================================
-   YU-GI-OH! HTML EDITION - MASTER GAME ENGINE
-   Version: 3.8 MAX
+   YU-GI-OH! HTML EDITION - ULTIMATE GAME ENGINE
+   Version: 3.8 ULTIMATE
    Author: Qwen 3.8 Max
-   Speed Duel Format - Complete Card Game Logic
+   Fully Functional Card Game with AI Opponent
    =================================================================== */
 
 // ============================================= //
@@ -28,9 +28,9 @@ const CONFIG = {
     },
 
     // AI Settings
-    AI_THINK_DELAY: 1500,
-    AI_ACTION_DELAY: 800,
-    AI_ATTACK_DELAY: 1200,
+    AI_THINK_DELAY: 1200,
+    AI_ACTION_DELAY: 600,
+    AI_ATTACK_DELAY: 1000,
 
     // Phases
     PHASES: {
@@ -38,7 +38,6 @@ const CONFIG = {
         STANDBY: 'standby',
         MAIN1: 'main1',
         BATTLE: 'battle',
-        MAIN2: 'main2',
         END: 'end'
     },
 
@@ -66,15 +65,19 @@ const CONFIG = {
         WARRIOR: 'Warrior',
         SPELLCASTER: 'Spellcaster',
         DRAGON: 'Dragon',
-        BEAST: 'Beast',
+        BEAST: 'Beast-Warrior',
         FIEND: 'Fiend',
         MACHINE: 'Machine',
         FAIRY: 'Fairy'
-    }
+    },
+
+    // UI Settings
+    TOAST_DURATION: 3000,
+    LOG_MAX_ENTRIES: 50
 };
 
 // ============================================= //
-// 2. CARD DATABASE                              //
+// 2. CARD DATABASE (EXPANDED)                   //
 // ============================================= //
 
 const CARD_DATABASE = {
@@ -105,6 +108,20 @@ const CARD_DATABASE = {
         description: 'An elf who learned to wield a sword, he baffles enemies with lightning-swift attacks.',
         rarity: 'Common'
     },
+    'kuriboh': {
+        id: 40640057,
+        name: 'Kuriboh',
+        type: CONFIG.CARD_TYPES.MONSTER,
+        level: 1,
+        attribute: CONFIG.ATTRIBUTES.DARK,
+        monsterType: CONFIG.MONSTER_TYPES.FIEND,
+        atk: 300,
+        def: 200,
+        image: 'https://images.ygoprodeck.com/images/cards/40640057.jpg',
+        description: 'HAND EFFECT: When you take battle damage, you can discard this card; reduce damage to 0.',
+        rarity: 'Super Rare',
+        effect: 'hand_discard_negate_damage'
+    },
     'mystical-space-typhoon': {
         id: 5318639,
         name: 'Mystical Space Typhoon',
@@ -113,6 +130,68 @@ const CARD_DATABASE = {
         description: 'Destroy 1 Spell/Trap Card on the field.',
         rarity: 'Super Rare',
         effect: 'destroy_spell_trap'
+    },
+    'swords-of-revealing-light': {
+        id: 72302403,
+        name: 'Swords of Revealing Light',
+        type: CONFIG.CARD_TYPES.SPELL,
+        image: 'https://images.ygoprodeck.com/images/cards/72302403.jpg',
+        description: 'Flip all monsters your opponent controls face-up. These monsters cannot attack for 3 turns.',
+        rarity: 'Super Rare',
+        effect: 'flip_and_lock'
+    },
+    'mirror-force': {
+        id: 44095762,
+        name: 'Mirror Force',
+        type: CONFIG.CARD_TYPES.TRAP,
+        image: 'https://images.ygoprodeck.com/images/cards/44095762.jpg',
+        description: 'When an opponent\'s monster declares an attack: Destroy all ATK Position monsters your opponent controls.',
+        rarity: 'Ultra Rare',
+        effect: 'destroy_all_attack_position'
+    },
+    'fissure': {
+        id: 74845895,
+        name: 'Fissure',
+        type: CONFIG.CARD_TYPES.SPELL,
+        image: 'https://images.ygoprodeck.com/images/cards/74845895.jpg',
+        description: 'Destroy the 1 face-up monster your opponent controls with the lowest ATK.',
+        rarity: 'Rare',
+        effect: 'destroy_lowest_atk'
+    },
+    'dark-hole': {
+        id: 53129443,
+        name: 'Dark Hole',
+        type: CONFIG.CARD_TYPES.SPELL,
+        image: 'https://images.ygoprodeck.com/images/cards/53129443.jpg',
+        description: 'Destroy all monsters on the field.',
+        rarity: 'Super Rare',
+        effect: 'destroy_all_monsters'
+    },
+    'axe-raider': {
+        id: 50287060,
+        name: 'Axe Raider',
+        type: CONFIG.CARD_TYPES.MONSTER,
+        level: 4,
+        attribute: CONFIG.ATTRIBUTES.EARTH,
+        monsterType: CONFIG.MONSTER_TYPES.WARRIOR,
+        atk: 1700,
+        def: 1150,
+        image: 'https://images.ygoprodeck.com/images/cards/50287060.jpg',
+        description: 'A cruel warrior that attacks with twin axes.',
+        rarity: 'Common'
+    },
+    'la-jinn': {
+        id: 79335209,
+        name: 'La Jinn the Mystical Genie',
+        type: CONFIG.CARD_TYPES.MONSTER,
+        level: 4,
+        attribute: CONFIG.ATTRIBUTES.DARK,
+        monsterType: CONFIG.MONSTER_TYPES.FIEND,
+        atk: 1800,
+        def: 1000,
+        image: 'https://images.ygoprodeck.com/images/cards/79335209.jpg',
+        description: 'A genie of the lamp that is completely ruthless.',
+        rarity: 'Rare'
     },
 
     // KAIBA'S CARDS (Opponent AI)
@@ -142,6 +221,20 @@ const CARD_DATABASE = {
         description: 'A monstrous beast that can tear apart anything in its way.',
         rarity: 'Common'
     },
+    'lord-of-d': {
+        id: 17985575,
+        name: 'Lord of D.',
+        type: CONFIG.CARD_TYPES.MONSTER,
+        level: 4,
+        attribute: CONFIG.ATTRIBUTES.DARK,
+        monsterType: CONFIG.MONSTER_TYPES.SPELLCASTER,
+        atk: 1200,
+        def: 1100,
+        image: 'https://images.ygoprodeck.com/images/cards/17985575.jpg',
+        description: 'Dragon monsters on the field cannot be targeted by Spells, Traps, or monster effects that target.',
+        rarity: 'Super Rare',
+        effect: 'protect_dragons'
+    },
     'monster-reborn': {
         id: 83764718,
         name: 'Monster Reborn',
@@ -151,60 +244,23 @@ const CARD_DATABASE = {
         rarity: 'Super Rare',
         effect: 'special_summon_gy'
     },
-
-    // ADDITIONAL CARDS FOR VARIETY
-    'kuriboh': {
-        id: 40640057,
-        name: 'Kuriboh',
-        type: CONFIG.CARD_TYPES.MONSTER,
-        level: 1,
-        attribute: CONFIG.ATTRIBUTES.DARK,
-        monsterType: CONFIG.MONSTER_TYPES.FIEND,
-        atk: 300,
-        def: 200,
-        image: 'https://images.ygoprodeck.com/images/cards/40640057.jpg',
-        description: 'HAND EFFECT: When you take battle damage, you can discard this card; reduce damage to 0.',
-        rarity: 'Super Rare'
-    },
-    'fissure': {
-        id: 74845895,
-        name: 'Fissure',
+    'enemy-controller': {
+        id: 98045062,
+        name: 'Enemy Controller',
         type: CONFIG.CARD_TYPES.SPELL,
-        image: 'https://images.ygoprodeck.com/images/cards/74845895.jpg',
-        description: 'Destroy the 1 face-up monster your opponent controls with the lowest ATK.',
-        rarity: 'Rare',
-        effect: 'destroy_lowest'
-    },
-    'dark-hole': {
-        id: 53129443,
-        name: 'Dark Hole',
-        type: CONFIG.CARD_TYPES.SPELL,
-        image: 'https://images.ygoprodeck.com/images/cards/53129443.jpg',
-        description: 'Destroy all monsters on the field.',
+        image: 'https://images.ygoprodeck.com/images/cards/98045062.jpg',
+        description: 'Target 1 face-up monster your opponent controls; take control of it until the End Phase.',
         rarity: 'Super Rare',
-        effect: 'destroy_all_monsters'
+        effect: 'take_control'
     },
-    'mirror-force': {
-        id: 44095762,
-        name: 'Mirror Force',
+    'crush-card-virus': {
+        id: 57728570,
+        name: 'Crush Card Virus',
         type: CONFIG.CARD_TYPES.TRAP,
-        image: 'https://images.ygoprodeck.com/images/cards/44095762.jpg',
-        description: 'When an opponent\'s monster declares an attack: Destroy all ATK Position monsters your opponent controls.',
+        image: 'https://images.ygoprodeck.com/images/cards/57728570.jpg',
+        description: 'Tribute 1 DARK monster with 1000 or less ATK; destroy all monsters your opponent controls with 1500 or more ATK.',
         rarity: 'Ultra Rare',
-        effect: 'destroy_all_attack'
-    },
-    'summoned-skull': {
-        id: 70781052,
-        name: 'Summoned Skull',
-        type: CONFIG.CARD_TYPES.MONSTER,
-        level: 6,
-        attribute: CONFIG.ATTRIBUTES.DARK,
-        monsterType: CONFIG.MONSTER_TYPES.FIEND,
-        atk: 2500,
-        def: 1200,
-        image: 'https://images.ygoprodeck.com/images/cards/70781052.jpg',
-        description: 'A fiend with dark powers, especially strong in a fierce battle.',
-        rarity: 'Ultra Rare'
+        effect: 'destroy_high_atk'
     },
     'giant-soldier-of-stone': {
         id: 46009933,
@@ -212,61 +268,12 @@ const CARD_DATABASE = {
         type: CONFIG.CARD_TYPES.MONSTER,
         level: 3,
         attribute: CONFIG.ATTRIBUTES.EARTH,
-        monsterType: CONFIG.MONSTER_TYPES.ROCK,
+        monsterType: CONFIG.MONSTER_TYPES.WARRIOR,
         atk: 1300,
         def: 2000,
         image: 'https://images.ygoprodeck.com/images/cards/46009933.jpg',
         description: 'A solid-bodied warrior of stone.',
         rarity: 'Common'
-    },
-    'la-jinn-the-mystical-genie': {
-        id: 79335209,
-        name: 'La Jinn the Mystical Genie of the Lamp',
-        type: CONFIG.CARD_TYPES.MONSTER,
-        level: 4,
-        attribute: CONFIG.ATTRIBUTES.DARK,
-        monsterType: CONFIG.MONSTER_TYPES.FIEND,
-        atk: 1800,
-        def: 1000,
-        image: 'https://images.ygoprodeck.com/images/cards/79335209.jpg',
-        description: 'A genie of the lamp that is completely ruthless.',
-        rarity: 'Rare'
-    },
-    'axe-raider': {
-        id: 50287060,
-        name: 'Axe Raider',
-        type: CONFIG.CARD_TYPES.MONSTER,
-        level: 4,
-        attribute: CONFIG.ATTRIBUTES.EARTH,
-        monsterType: CONFIG.MONSTER_TYPES.WARRIOR,
-        atk: 1700,
-        def: 1150,
-        image: 'https://images.ygoprodeck.com/images/cards/50287060.jpg',
-        description: 'A cruel warrior that attacks with twin axes.',
-        rarity: 'Common'
-    },
-    'mystic-tomato': {
-        id: 48309962,
-        name: 'Mystic Tomato',
-        type: CONFIG.CARD_TYPES.MONSTER,
-        level: 4,
-        attribute: CONFIG.ATTRIBUTES.DARK,
-        monsterType: CONFIG.MONSTER_TYPES.PLANT,
-        atk: 1400,
-        def: 1100,
-        image: 'https://images.ygoprodeck.com/images/cards/48309962.jpg',
-        description: 'When this card is destroyed by battle: Special Summon 1 DARK monster with 1500 or less ATK from your Deck.',
-        rarity: 'Common',
-        effect: 'search_dark_on_destroy'
-    },
-    'trap-hole': {
-        id: 11819999,
-        name: 'Trap Hole',
-        type: CONFIG.CARD_TYPES.TRAP,
-        image: 'https://images.ygoprodeck.com/images/cards/11819999.jpg',
-        description: 'When your opponent Normal or Flip Summons a monster with 1000 or more ATK: Destroy that monster.',
-        rarity: 'Common',
-        effect: 'destroy_summoned'
     },
     'ookazi': {
         id: 70046172,
@@ -276,24 +283,6 @@ const CARD_DATABASE = {
         description: 'Inflict 800 damage to your opponent.',
         rarity: 'Common',
         effect: 'burn_800'
-    },
-    'red-medicine': {
-        id: 95098230,
-        name: 'Red Medicine',
-        type: CONFIG.CARD_TYPES.SPELL,
-        image: 'https://images.ygoprodeck.com/images/cards/95098230.jpg',
-        description: 'Target 1 monster; gain 1000 LP.',
-        rarity: 'Common',
-        effect: 'heal_1000'
-    },
-    'necks': {
-        id: 48497555,
-        name: 'Necks',
-        type: CONFIG.CARD_TYPES.SPELL,
-        image: 'https://images.ygoprodeck.com/images/cards/48497555.jpg',
-        description: 'Increase the ATK of 1 monster by 300 until the end of this turn.',
-        rarity: 'Common',
-        effect: 'boost_atk_300'
     }
 };
 
@@ -304,27 +293,29 @@ const CARD_DATABASE = {
 const PLAYER_DECK = [
     'dark-magician', 'dark-magician',
     'celtic-guardian', 'celtic-guardian', 'celtic-guardian',
-    'summoned-skull', 'summoned-skull',
-    'giant-soldier-of-stone', 'giant-soldier-of-stone',
-    'la-jinn-the-mystical-genie', 'la-jinn-the-mystical-genie',
-    'axe-raider', 'axe-raider',
     'kuriboh', 'kuriboh',
+    'axe-raider', 'axe-raider',
+    'la-jinn', 'la-jinn',
     'mystical-space-typhoon', 'mystical-space-typhoon',
-    'dark-hole', 'dark-hole',
-    'fissure', 'fissure'
+    'swords-of-revealing-light',
+    'mirror-force', 'mirror-force',
+    'fissure', 'fissure',
+    'dark-hole',
+    'dark-hole'
 ];
 
 const OPPONENT_DECK = [
     'blue-eyes-white-dragon', 'blue-eyes-white-dragon',
     'vorse-raider', 'vorse-raider', 'vorse-raider',
-    'vorse-raider',
-    'axe-raider', 'axe-raider', 'axe-raider',
+    'vorse-raider', 'vorse-raider',
+    'lord-of-d', 'lord-of-d',
     'giant-soldier-of-stone', 'giant-soldier-of-stone',
-    'la-jinn-the-mystical-genie', 'la-jinn-the-mystical-genie',
     'monster-reborn', 'monster-reborn',
+    'enemy-controller',
+    'crush-card-virus',
     'mystical-space-typhoon', 'mystical-space-typhoon',
-    'dark-hole', 'dark-hole',
-    'ookazi', 'ookazi'
+    'ookazi', 'ookazi',
+    'dark-hole'
 ];
 
 // ============================================= //
@@ -340,7 +331,7 @@ class GameState {
         // Turn & Phase
         this.turnNumber = 1;
         this.currentPhase = CONFIG.PHASES.STANDBY;
-        this.turnOwner = 'player'; // 'player' or 'opponent'
+        this.turnOwner = 'player';
 
         // Life Points
         this.playerLP = CONFIG.STARTING_LP;
@@ -350,7 +341,7 @@ class GameState {
         this.playerHand = [];
         this.opponentHand = [];
 
-        // Decks (will be shuffled)
+        // Decks
         this.playerDeck = [];
         this.opponentDeck = [];
 
@@ -358,12 +349,8 @@ class GameState {
         this.playerGraveyard = [];
         this.opponentGraveyard = [];
 
-        // Extra Decks (placeholder)
-        this.playerExtra = [];
-        this.opponentExtra = [];
-
         // Field Zones
-        this.playerMonsters = [null, null, null]; // Index 0, 1, 2
+        this.playerMonsters = [null, null, null];
         this.opponentMonsters = [null, null, null];
 
         this.playerSpellsTraps = [null, null, null];
@@ -375,12 +362,15 @@ class GameState {
         // Turn Flags
         this.normalSummonUsed = false;
         this.hasDrawnThisTurn = false;
-        this.attackedThisTurn = new Set(); // Set of card uniqueIds that have attacked
+        this.attackedThisTurn = new Set();
         this.battlePhaseEntered = false;
 
+        // Trap activation flags
+        this.trapSetTurn = new Map(); // uniqueId -> turn number when set
+
         // Game State
-        this.gameState = 'loading'; // loading, menu, playing, ended
-        this.winner = null; // 'player', 'opponent', null
+        this.gameState = 'loading';
+        this.winner = null;
 
         // Interaction State
         this.selectedCard = null;
@@ -401,20 +391,33 @@ class GameState {
 
         // Unique ID Counter
         this.nextCardId = 1;
+
+        // Settings
+        this.settings = {
+            sfxEnabled: true,
+            musicEnabled: true,
+            animationSpeed: 'normal',
+            showDamage: true,
+            showPhases: true,
+            bgEffects: true,
+            particleEffects: true,
+            cardGlow: true
+        };
     }
 }
+
+// Global game state
+let gameState = new GameState();
 
 // ============================================= //
 // 5. UTILITY FUNCTIONS                          //
 // ============================================= //
 
 const Utils = {
-    // Generate unique card ID
     generateUniqueId() {
         return `card_${gameState.nextCardId++}_${Date.now()}`;
     },
 
-    // Shuffle array (Fisher-Yates)
     shuffleArray(array) {
         const shuffled = [...array];
         for (let i = shuffled.length - 1; i > 0; i--) {
@@ -424,34 +427,28 @@ const Utils = {
         return shuffled;
     },
 
-    // Delay function for async animations
     delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     },
 
-    // Get animation speed multiplier
     getAnimationSpeed() {
-        const setting = localStorage.getItem('animationSpeed') || 'normal';
+        const setting = gameState.settings.animationSpeed || 'normal';
         return CONFIG.ANIMATION_SPEED[setting] || 1.0;
     },
 
-    // Format number with commas
     formatNumber(num) {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     },
 
-    // Random integer between min and max (inclusive)
     randomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     },
 
-    // Get card data from database
     getCardData(cardId) {
         return CARD_DATABASE[cardId] || null;
     },
 
-    // Create card instance with unique ID
-    createCardInstance(cardId) {
+    createCardInstance(cardId, owner) {
         const cardData = this.getCardData(cardId);
         if (!cardData) return null;
 
@@ -459,17 +456,16 @@ const Utils = {
             ...cardData,
             uniqueId: this.generateUniqueId(),
             cardId: cardId,
-            position: 'attack', // 'attack' or 'defense'
+            position: 'attack',
             faceUp: true,
             hasAttacked: false,
             summonedThisTurn: true,
-            owner: null, // 'player' or 'opponent'
+            owner: owner,
             zoneIndex: -1,
-            zoneType: null // 'monster', 'spelltrap', 'field'
+            zoneType: null
         };
     },
 
-    // Calculate battle damage
     calculateBattleDamage(attacker, defender, defenderPosition) {
         const atkValue = attacker.atk || 0;
 
@@ -495,17 +491,16 @@ const Utils = {
                 };
             }
         } else {
-            // Defense position
             const defValue = defender.def || 0;
             if (atkValue > defValue) {
                 return {
-                    damage: 0, // No damage when attacking DEF
+                    damage: 0,
                     defenderDestroyed: true,
                     attackerDestroyed: false
                 };
             } else if (atkValue < defValue) {
                 return {
-                    damage: defValue - atkValue, // Pierce damage to attacker
+                    damage: defValue - atkValue,
                     defenderDestroyed: false,
                     attackerDestroyed: false
                 };
@@ -519,12 +514,10 @@ const Utils = {
         }
     },
 
-    // Clamp value between min and max
     clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
     },
 
-    // Get element position for animations
     getElementCenter(element) {
         const rect = element.getBoundingClientRect();
         return {
@@ -533,7 +526,6 @@ const Utils = {
         };
     },
 
-    // Log message to battle log
     logMessage(message, type = 'system') {
         const logContent = document.getElementById('log-content');
         if (!logContent) return;
@@ -550,13 +542,11 @@ const Utils = {
 
         logContent.insertBefore(entry, logContent.firstChild);
 
-        // Keep only last 50 entries
-        while (logContent.children.length > 50) {
+        while (logContent.children.length > CONFIG.LOG_MAX_ENTRIES) {
             logContent.removeChild(logContent.lastChild);
         }
     },
 
-    // Show toast notification
     showToast(title, message, type = 'info') {
         const container = document.getElementById('toast-container');
         if (!container) return;
@@ -570,30 +560,48 @@ const Utils = {
 
         container.appendChild(toast);
 
-        // Auto remove after 3 seconds
         setTimeout(() => {
             toast.classList.add('removing');
             setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        }, CONFIG.TOAST_DURATION);
     },
 
-    // Play sound effect
     playSound(soundId) {
+        if (!gameState.settings.sfxEnabled) return;
         const sound = document.getElementById(soundId);
-        if (sound && localStorage.getItem('sfxEnabled') !== 'false') {
+        if (sound) {
             sound.currentTime = 0;
-            sound.play().catch(() => {}); // Ignore autoplay errors
+            sound.play().catch(() => {});
         }
     },
 
-    // Check if it's player's turn
     isPlayerTurn() {
         return gameState.turnOwner === 'player';
     },
 
-    // Check if it's opponent's turn
     isOpponentTurn() {
         return gameState.turnOwner === 'opponent';
+    },
+
+    // Save settings to localStorage
+    saveSettings() {
+        try {
+            localStorage.setItem('yugioh_settings', JSON.stringify(gameState.settings));
+        } catch (e) {
+            console.warn('Could not save settings:', e);
+        }
+    },
+
+    // Load settings from localStorage
+    loadSettings() {
+        try {
+            const saved = localStorage.getItem('yugioh_settings');
+            if (saved) {
+                gameState.settings = { ...gameState.settings, ...JSON.parse(saved) };
+            }
+        } catch (e) {
+            console.warn('Could not load settings:', e);
+        }
     }
 };
 
@@ -602,7 +610,6 @@ const Utils = {
 // ============================================= //
 
 const DOMManager = {
-    // Cache DOM elements
     elements: {},
 
     init() {
@@ -620,7 +627,6 @@ const DOMManager = {
 
             // Menu
             btnStartDuel: document.getElementById('btn-start-duel'),
-            btnDeckBuilder: document.getElementById('btn-deck-builder'),
             btnTutorial: document.getElementById('btn-tutorial'),
             btnSettings: document.getElementById('btn-settings'),
 
@@ -650,7 +656,6 @@ const DOMManager = {
             btnNextPhase: document.getElementById('btn-next-phase'),
             btnEndTurn: document.getElementById('btn-end-turn'),
             btnCancel: document.getElementById('btn-cancel'),
-            btnAutoDuel: document.getElementById('btn-auto-duel'),
             btnSurrender: document.getElementById('btn-surrender'),
 
             // Card Inspector
@@ -676,18 +681,13 @@ const DOMManager = {
             summonEffectsContainer: document.getElementById('summon-effects-container'),
             battleMessages: document.getElementById('battle-messages'),
             damageFloaters: document.getElementById('damage-floaters'),
-            attackSvg: document.getElementById('attack-svg'),
-            attackLine: document.getElementById('attack-line'),
 
             // Modals
             graveyardModal: document.getElementById('graveyard-modal'),
             graveyardGrid: document.getElementById('graveyard-grid'),
             graveyardClose: document.getElementById('graveyard-close'),
+            graveyardCloseBtn: document.getElementById('graveyard-close-btn'),
             graveyardOwnerLabel: document.getElementById('graveyard-owner-label'),
-
-            deckModal: document.getElementById('deck-modal'),
-            deckGrid: document.getElementById('deck-grid'),
-            deckClose: document.getElementById('deck-close'),
 
             dialogModal: document.getElementById('dialog-modal'),
             dialogTitle: document.getElementById('dialog-title'),
@@ -697,8 +697,17 @@ const DOMManager = {
 
             settingsModal: document.getElementById('settings-modal'),
             settingsClose: document.getElementById('settings-close'),
+            settingsSave: document.getElementById('settings-save'),
 
             tutorialOverlay: document.getElementById('tutorial-overlay'),
+            tutorialStep: document.getElementById('tutorial-step'),
+            tutorialTotal: document.getElementById('tutorial-total'),
+            tutorialTitle: document.getElementById('tutorial-title'),
+            tutorialImage: document.getElementById('tutorial-image'),
+            tutorialText: document.getElementById('tutorial-text'),
+            tutorialPrev: document.getElementById('tutorial-prev'),
+            tutorialSkip: document.getElementById('tutorial-skip'),
+            tutorialNext: document.getElementById('tutorial-next'),
 
             // Battle Log
             logToggle: document.getElementById('log-toggle'),
@@ -715,17 +724,22 @@ const DOMManager = {
             cursorFollower: document.getElementById('cursor-follower'),
             cursorFollowerInner: document.getElementById('cursor-follower-inner'),
 
-            // Debug
-            debugPanel: document.getElementById('debug-panel'),
-            debugClose: document.getElementById('debug-close'),
-            debugLog: document.getElementById('debug-log'),
+            // Graveyard/Deck buttons
+            btnPlayerGY: document.getElementById('btn-player-gy'),
+            btnOpponentGY: document.getElementById('btn-opponent-gy'),
+            btnPlayerDeck: document.getElementById('btn-player-deck'),
+            btnOpponentDeck: document.getElementById('btn-opponent-deck'),
+            btnPlayerGYField: document.getElementById('btn-player-graveyard'),
+            btnOpponentGYField: document.getElementById('btn-opponent-graveyard'),
 
-            // Shortcuts
-            shortcutsTooltip: document.getElementById('shortcuts-tooltip')
+            // Target Selector
+            targetSelector: document.getElementById('target-selector'),
+            selectorTitle: document.getElementById('selector-title'),
+            selectorText: document.getElementById('selector-text'),
+            selectorCancel: document.getElementById('selector-cancel')
         };
     },
 
-    // Update LP display with rolling animation
     updateLPDisplay(owner, newValue) {
         const displayId = owner === 'player' ? 'playerLPDisplay' : 'opponentLPDisplay';
         const barId = owner === 'player' ? 'playerLPBar' : 'opponentLPBar';
@@ -748,11 +762,9 @@ const DOMManager = {
             }
         });
 
-        // Update LP bar
         const percentage = (newValue / CONFIG.STARTING_LP) * 100;
         bar.style.width = `${percentage}%`;
 
-        // Change bar color based on LP percentage
         if (percentage <= 25) {
             bar.style.background = 'linear-gradient(90deg, #ff003c 0%, #ff4444 100%)';
         } else if (percentage <= 50) {
@@ -762,35 +774,37 @@ const DOMManager = {
         }
     },
 
-    // Update deck counters
     updateDeckCounters() {
-        this.elements.playerDeckCount.textContent = gameState.playerDeckCount;
-        this.elements.opponentDeckCount.textContent = gameState.opponentDeckCount;
-        this.elements.playerGYCount.textContent = gameState.playerGYCount;
-        this.elements.opponentGYCount.textContent = gameState.opponentGYCount;
+        if (this.elements.playerDeckCount) this.elements.playerDeckCount.textContent = gameState.playerDeckCount;
+        if (this.elements.opponentDeckCount) this.elements.opponentDeckCount.textContent = gameState.opponentDeckCount;
+        if (this.elements.playerGYCount) this.elements.playerGYCount.textContent = gameState.playerGYCount;
+        if (this.elements.opponentGYCount) this.elements.opponentGYCount.textContent = gameState.opponentGYCount;
     },
 
-    // Update phase display
     updatePhaseDisplay() {
         const phaseNames = {
             [CONFIG.PHASES.DRAW]: 'DRAW PHASE',
             [CONFIG.PHASES.STANDBY]: 'STANDBY PHASE',
             [CONFIG.PHASES.MAIN1]: 'MAIN PHASE 1',
             [CONFIG.PHASES.BATTLE]: 'BATTLE PHASE',
-            [CONFIG.PHASES.MAIN2]: 'MAIN PHASE 2',
             [CONFIG.PHASES.END]: 'END PHASE'
         };
 
-        this.elements.currentPhaseName.textContent = phaseNames[gameState.currentPhase] || 'MAIN PHASE';
-        this.elements.turnCounter.textContent = gameState.turnNumber;
-        this.elements.turnOwner.textContent = gameState.turnOwner === 'player' ? 'YOUR TURN' : "OPPONENT'S TURN";
+        if (this.elements.currentPhaseName) {
+            this.elements.currentPhaseName.textContent = phaseNames[gameState.currentPhase] || 'MAIN PHASE';
+        }
+        if (this.elements.turnCounter) {
+            this.elements.turnCounter.textContent = gameState.turnNumber;
+        }
+        if (this.elements.turnOwner) {
+            this.elements.turnOwner.textContent = gameState.turnOwner === 'player' ? 'YOUR TURN' : "OPPONENT'S TURN";
+        }
 
-        // Update phase track visual
         document.querySelectorAll('.phase-step').forEach(step => {
             step.classList.remove('active', 'completed');
         });
 
-        const phaseOrder = ['draw', 'standby', 'main1', 'battle', 'main2', 'end'];
+        const phaseOrder = ['draw', 'standby', 'main1', 'battle', 'end'];
         const currentIndex = phaseOrder.indexOf(gameState.currentPhase);
 
         phaseOrder.forEach((phase, index) => {
@@ -802,7 +816,6 @@ const DOMManager = {
         });
     },
 
-    // Create card DOM element
     createCardElement(cardInstance, options = {}) {
         const { faceDown = false, inHand = false, onField = false } = options;
 
@@ -824,7 +837,6 @@ const DOMManager = {
             </div>
         `;
 
-        // Add position indicator for monsters on field
         if (onField && cardInstance.type === CONFIG.CARD_TYPES.MONSTER && cardInstance.faceUp) {
             if (cardInstance.position === 'attack') {
                 cardEl.classList.add('card-position-attack');
@@ -844,21 +856,40 @@ const DOMManager = {
         return cardEl;
     },
 
-    // Render player hand
     renderPlayerHand() {
         const container = this.elements.playerHandCards;
+        if (!container) return;
         container.innerHTML = '';
 
         gameState.playerHand.forEach((cardInstance, index) => {
             const cardEl = this.createCardElement(cardInstance, { inHand: true });
             cardEl.style.zIndex = index + 1;
 
-            // Add event listeners
+            // Click handler
             cardEl.addEventListener('click', () => PlayerActions.onHandCardClick(cardInstance, cardEl));
+
+            // Right click / long press handler
             cardEl.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
                 PlayerActions.onHandCardRightClick(cardInstance, cardEl, e);
             });
+
+            // Touch long press for mobile
+            let touchTimer;
+            cardEl.addEventListener('touchstart', (e) => {
+                touchTimer = setTimeout(() => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    PlayerActions.onHandCardRightClick(cardInstance, cardEl, {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY
+                    });
+                }, 500);
+            });
+            cardEl.addEventListener('touchend', () => clearTimeout(touchTimer));
+            cardEl.addEventListener('touchmove', () => clearTimeout(touchTimer));
+
+            // Hover for inspector
             cardEl.addEventListener('mouseenter', () => CardInspector.show(cardInstance));
             cardEl.addEventListener('mouseleave', () => CardInspector.hide());
 
@@ -866,9 +897,9 @@ const DOMManager = {
         });
     },
 
-    // Render opponent hand (face down)
     renderOpponentHand() {
         const container = this.elements.opponentHandCards;
+        if (!container) return;
         container.innerHTML = '';
 
         gameState.opponentHand.forEach((cardInstance, index) => {
@@ -878,31 +909,40 @@ const DOMManager = {
         });
     },
 
-    // Render monster on field
     renderMonsterOnField(owner, zoneIndex, cardInstance) {
         const zoneId = owner === 'player' ? `player-monster-${zoneIndex}` : `opponent-monster-${zoneIndex}`;
         const zoneEl = document.getElementById(zoneId);
 
         if (!zoneEl) return;
 
-        // Clear placeholder
         zoneEl.innerHTML = '';
 
         if (cardInstance) {
             const faceDown = !cardInstance.faceUp;
             const cardEl = this.createCardElement(cardInstance, { onField: true, faceDown });
 
-            if (cardInstance.position === 'defense') {
-                cardEl.classList.add('card-position-defense');
-            }
-
-            // Add event listeners for player's monsters
             if (owner === 'player') {
                 cardEl.addEventListener('click', () => PlayerActions.onFieldMonsterClick(cardInstance, cardEl));
                 cardEl.addEventListener('contextmenu', (e) => {
                     e.preventDefault();
                     PlayerActions.onFieldMonsterRightClick(cardInstance, cardEl, e);
                 });
+
+                // Touch long press
+                let touchTimer;
+                cardEl.addEventListener('touchstart', (e) => {
+                    touchTimer = setTimeout(() => {
+                        e.preventDefault();
+                        const touch = e.touches[0];
+                        PlayerActions.onFieldMonsterRightClick(cardInstance, cardEl, {
+                            clientX: touch.clientX,
+                            clientY: touch.clientY
+                        });
+                    }, 500);
+                });
+                cardEl.addEventListener('touchend', () => clearTimeout(touchTimer));
+                cardEl.addEventListener('touchmove', () => clearTimeout(touchTimer));
+
                 cardEl.addEventListener('mouseenter', () => {
                     if (cardInstance.faceUp) CardInspector.show(cardInstance);
                 });
@@ -912,7 +952,6 @@ const DOMManager = {
             zoneEl.appendChild(cardEl);
             zoneEl.classList.add('occupied');
         } else {
-            // Show placeholder
             zoneEl.innerHTML = `
                 <div class="zone-placeholder">
                     <div class="zone-icon">👾</div>
@@ -923,7 +962,6 @@ const DOMManager = {
         }
     },
 
-    // Render spell/trap on field
     renderSpellTrapOnField(owner, zoneIndex, cardInstance) {
         const zoneId = owner === 'player' ? `player-st-${zoneIndex}` : `opponent-st-${zoneIndex}`;
         const zoneEl = document.getElementById(zoneId);
@@ -955,33 +993,31 @@ const DOMManager = {
         }
     },
 
-    // Render entire field
     renderField() {
-        // Player monsters
         gameState.playerMonsters.forEach((card, index) => {
             this.renderMonsterOnField('player', index, card);
         });
 
-        // Opponent monsters
         gameState.opponentMonsters.forEach((card, index) => {
             this.renderMonsterOnField('opponent', index, card);
         });
 
-        // Player S/T
         gameState.playerSpellsTraps.forEach((card, index) => {
             this.renderSpellTrapOnField('player', index, card);
         });
 
-        // Opponent S/T
         gameState.opponentSpellsTraps.forEach((card, index) => {
             this.renderSpellTrapOnField('opponent', index, card);
         });
     },
 
-    // Show phase transition overlay
     async showPhaseTransition(phaseName) {
+        if (!gameState.settings.showPhases) return;
+
         const overlay = this.elements.phaseTransition;
         const text = this.elements.phaseTransitionText;
+
+        if (!overlay || !text) return;
 
         text.textContent = phaseName;
         overlay.classList.remove('hidden');
@@ -991,9 +1027,10 @@ const DOMManager = {
         overlay.classList.add('hidden');
     },
 
-    // Show battle message
     showBattleMessage(text, type = 'summon') {
         const container = this.elements.battleMessages;
+        if (!container) return;
+
         const msg = document.createElement('div');
         msg.className = `battle-message ${type}`;
         msg.textContent = text;
@@ -1002,12 +1039,12 @@ const DOMManager = {
         setTimeout(() => msg.remove(), 2000);
     },
 
-    // Show damage floater
     showDamageFloater(targetElement, amount) {
-        if (!targetElement) return;
+        if (!gameState.settings.showDamage || !targetElement) return;
 
         const rect = targetElement.getBoundingClientRect();
         const container = this.elements.damageFloaters;
+        if (!container) return;
 
         const floater = document.createElement('div');
         floater.className = 'damage-floater';
@@ -1020,16 +1057,16 @@ const DOMManager = {
         setTimeout(() => floater.remove(), 1500);
     },
 
-    // Screen shake effect
     screenShake(intensity = 'light') {
         const gameContainer = this.elements.gameContainer;
+        if (!gameContainer) return;
+
         gameContainer.classList.add(`shake-${intensity}`);
         setTimeout(() => {
             gameContainer.classList.remove(`shake-${intensity}`);
         }, 700);
     },
 
-    // Impact flash
     impactFlash() {
         const flash = document.createElement('div');
         flash.className = 'impact-flash';
@@ -1037,35 +1074,45 @@ const DOMManager = {
         setTimeout(() => flash.remove(), 200);
     },
 
-    // Show graveyard modal
     showGraveyard(owner) {
         const modal = this.elements.graveyardModal;
         const grid = this.elements.graveyardGrid;
         const label = this.elements.graveyardOwnerLabel;
+
+        if (!modal || !grid || !label) return;
 
         const graveyard = owner === 'player' ? gameState.playerGraveyard : gameState.opponentGraveyard;
         label.textContent = owner === 'player' ? 'YOUR GRAVEYARD' : "OPPONENT'S GRAVEYARD";
 
         grid.innerHTML = '';
 
-        graveyard.forEach(cardInstance => {
-            const cardEl = this.createCardElement(cardInstance, {});
-            cardEl.addEventListener('mouseenter', () => CardInspector.show(cardInstance));
-            cardEl.addEventListener('mouseleave', () => CardInspector.hide());
-            grid.appendChild(cardEl);
-        });
+        if (graveyard.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--color-text-muted); padding: 40px;">No cards in graveyard</div>';
+        } else {
+            graveyard.forEach(cardInstance => {
+                const cardEl = this.createCardElement(cardInstance, {});
+                cardEl.addEventListener('mouseenter', () => CardInspector.show(cardInstance));
+                cardEl.addEventListener('mouseleave', () => CardInspector.hide());
+                grid.appendChild(cardEl);
+            });
+        }
 
         modal.classList.add('active');
     },
 
-    // Hide graveyard modal
     hideGraveyard() {
-        this.elements.graveyardModal.classList.remove('active');
+        if (this.elements.graveyardModal) {
+            this.elements.graveyardModal.classList.remove('active');
+        }
     },
 
-    // Show dialog
     showDialog(title, message) {
         return new Promise((resolve) => {
+            if (!this.elements.dialogTitle || !this.elements.dialogMessage) {
+                resolve(false);
+                return;
+            }
+
             this.elements.dialogTitle.textContent = title;
             this.elements.dialogMessage.textContent = message;
             this.elements.dialogModal.classList.add('active');
@@ -1091,22 +1138,20 @@ const DOMManager = {
         });
     },
 
-    // Enable/Disable action buttons based on phase
     updateActionButtons() {
         const isPlayerTurn = Utils.isPlayerTurn();
         const phase = gameState.currentPhase;
 
-        this.elements.btnNextPhase.disabled = !isPlayerTurn;
-        this.elements.btnEndTurn.disabled = !isPlayerTurn;
-        this.elements.btnSurrender.disabled = false;
+        if (this.elements.btnNextPhase) this.elements.btnNextPhase.disabled = !isPlayerTurn;
+        if (this.elements.btnEndTurn) this.elements.btnEndTurn.disabled = !isPlayerTurn;
+        if (this.elements.btnSurrender) this.elements.btnSurrender.disabled = false;
 
-        // Hide/show based on phase
         if (phase === CONFIG.PHASES.BATTLE) {
-            this.elements.btnNextPhase.textContent = '⏭️ END BATTLE';
+            if (this.elements.btnNextPhase) this.elements.btnNextPhase.querySelector('.btn-label').textContent = 'END BATTLE';
         } else if (phase === CONFIG.PHASES.END) {
-            this.elements.btnNextPhase.textContent = '➡️ NEXT TURN';
+            if (this.elements.btnNextPhase) this.elements.btnNextPhase.querySelector('.btn-label').textContent = 'NEXT TURN';
         } else {
-            this.elements.btnNextPhase.textContent = '➡️ NEXT PHASE';
+            if (this.elements.btnNextPhase) this.elements.btnNextPhase.querySelector('.btn-label').textContent = 'NEXT PHASE';
         }
     }
 };
@@ -1125,7 +1170,6 @@ const CardInspector = {
         DOMManager.elements.inspectorArt.src = cardInstance.image;
         DOMManager.elements.inspectorName.textContent = cardInstance.name;
 
-        // Type
         if (cardInstance.type === CONFIG.CARD_TYPES.MONSTER) {
             DOMManager.elements.inspectorType.textContent = cardInstance.monsterType || 'Monster';
             DOMManager.elements.inspectorType.style.display = '';
@@ -1140,20 +1184,17 @@ const CardInspector = {
             DOMManager.elements.inspectorLevel.style.display = 'none';
         }
 
-        // Description
         DOMManager.elements.inspectorDescription.textContent = cardInstance.description || 'No description available.';
 
-        // Stats
         if (cardInstance.type === CONFIG.CARD_TYPES.MONSTER) {
             DOMManager.elements.inspectorAtk.textContent = cardInstance.atk;
             DOMManager.elements.inspectorDef.textContent = cardInstance.def;
-            DOMManager.elements.inspectorStats.style.display = '';
+            if (DOMManager.elements.inspectorStats) DOMManager.elements.inspectorStats.style.display = '';
         } else {
             DOMManager.elements.inspectorAtk.textContent = '/';
             DOMManager.elements.inspectorDef.textContent = '/';
         }
 
-        // Meta
         DOMManager.elements.inspectorId.textContent = cardInstance.id || '-';
         DOMManager.elements.inspectorCategory.textContent = cardInstance.type ? cardInstance.type.toUpperCase() : '-';
 
@@ -1175,34 +1216,28 @@ const CardInspector = {
 // ============================================= //
 
 const PlayerActions = {
-    // Click card in hand
     onHandCardClick(cardInstance, cardEl) {
         if (!Utils.isPlayerTurn()) return;
-        if (gameState.currentPhase !== CONFIG.PHASES.MAIN1 && gameState.currentPhase !== CONFIG.PHASES.MAIN2) {
-            Utils.showToast('Cannot Play', 'You can only play cards during Main Phase.', 'error');
+        if (gameState.currentPhase !== CONFIG.PHASES.MAIN1) {
+            Utils.showToast('Cannot Play', 'You can only play cards during Main Phase 1.', 'error');
             return;
         }
 
-        // Check if it's a monster card
         if (cardInstance.type === CONFIG.CARD_TYPES.MONSTER) {
             if (gameState.normalSummonUsed) {
                 Utils.showToast('Already Summoned', 'You can only Normal Summon/Set once per turn.', 'error');
                 return;
             }
-            // Find empty monster zone
             const emptyZone = gameState.playerMonsters.findIndex(zone => zone === null);
             if (emptyZone === -1) {
                 Utils.showToast('Zones Full', 'All monster zones are occupied.', 'error');
                 return;
             }
-            // Auto summon in attack for now (right click for set)
             this.summonMonster(cardInstance, emptyZone, 'attack');
         }
-        // Spell card
         else if (cardInstance.type === CONFIG.CARD_TYPES.SPELL) {
             this.activateSpell(cardInstance);
         }
-        // Trap card - must be set first
         else if (cardInstance.type === CONFIG.CARD_TYPES.TRAP) {
             const emptyZone = gameState.playerSpellsTraps.findIndex(zone => zone === null);
             if (emptyZone === -1) {
@@ -1213,41 +1248,44 @@ const PlayerActions = {
         }
     },
 
-    // Right click card in hand (context menu)
     onHandCardRightClick(cardInstance, cardEl, event) {
         if (!Utils.isPlayerTurn()) return;
-        if (gameState.currentPhase !== CONFIG.PHASES.MAIN1 && gameState.currentPhase !== CONFIG.PHASES.MAIN2) return;
+        if (gameState.currentPhase !== CONFIG.PHASES.MAIN1) return;
 
         gameState.contextMenuTarget = { cardInstance, cardEl };
 
         const menu = DOMManager.elements.contextMenu;
+        if (!menu) return;
+
         menu.style.left = `${event.clientX}px`;
         menu.style.top = `${event.clientY}px`;
         menu.classList.remove('hidden');
 
-        // Show/hide relevant options
         document.querySelectorAll('.context-menu-item').forEach(item => {
             item.style.display = 'none';
         });
 
         if (cardInstance.type === CONFIG.CARD_TYPES.MONSTER) {
-            document.querySelector('[data-action="summon-atk"]').style.display = '';
-            document.querySelector('[data-action="summon-def"]').style.display = '';
+            const summonAtk = document.querySelector('[data-action="summon-atk"]');
+            const summonDef = document.querySelector('[data-action="summon-def"]');
+            if (summonAtk) summonAtk.style.display = '';
+            if (summonDef) summonDef.style.display = '';
         } else if (cardInstance.type === CONFIG.CARD_TYPES.SPELL) {
-            document.querySelector('[data-action="activate"]').style.display = '';
-            document.querySelector('[data-action="set-spell"]').style.display = '';
+            const activate = document.querySelector('[data-action="activate"]');
+            const setSpell = document.querySelector('[data-action="set-spell"]');
+            if (activate) activate.style.display = '';
+            if (setSpell) setSpell.style.display = '';
         } else if (cardInstance.type === CONFIG.CARD_TYPES.TRAP) {
-            document.querySelector('[data-action="set-spell"]').style.display = '';
+            const setSpell = document.querySelector('[data-action="set-spell"]');
+            if (setSpell) setSpell.style.display = '';
         }
-        document.querySelector('[data-action="cancel"]').style.display = '';
+        const cancel = document.querySelector('[data-action="cancel"]');
+        if (cancel) cancel.style.display = '';
     },
 
-    // Summon monster to field
     async summonMonster(cardInstance, zoneIndex, position) {
-        // Remove from hand
         gameState.playerHand = gameState.playerHand.filter(c => c.uniqueId !== cardInstance.uniqueId);
 
-        // Set up card instance
         cardInstance.owner = 'player';
         cardInstance.zoneIndex = zoneIndex;
         cardInstance.zoneType = 'monster';
@@ -1260,11 +1298,9 @@ const PlayerActions = {
         gameState.normalSummonUsed = true;
         gameState.cardsPlayed.player++;
 
-        // Render
         DOMManager.renderPlayerHand();
         DOMManager.renderMonsterOnField('player', zoneIndex, cardInstance);
 
-        // Animation
         const zoneEl = document.getElementById(`player-monster-${zoneIndex}`);
         if (zoneEl) {
             const summonEffect = document.createElement('div');
@@ -1280,9 +1316,7 @@ const PlayerActions = {
         await Utils.delay(800);
     },
 
-    // Set monster face-down in defense
     async setMonster(cardInstance, zoneIndex) {
-        // Remove from hand
         gameState.playerHand = gameState.playerHand.filter(c => c.uniqueId !== cardInstance.uniqueId);
 
         cardInstance.owner = 'player';
@@ -1306,7 +1340,6 @@ const PlayerActions = {
         await Utils.delay(600);
     },
 
-    // Set spell/trap face-down
     async setSpellTrap(cardInstance, zoneIndex) {
         gameState.playerHand = gameState.playerHand.filter(c => c.uniqueId !== cardInstance.uniqueId);
 
@@ -1316,6 +1349,7 @@ const PlayerActions = {
         cardInstance.faceUp = false;
 
         gameState.playerSpellsTraps[zoneIndex] = cardInstance;
+        gameState.trapSetTurn.set(cardInstance.uniqueId, gameState.turnNumber);
         gameState.cardsPlayed.player++;
 
         DOMManager.renderPlayerHand();
@@ -1326,19 +1360,15 @@ const PlayerActions = {
         await Utils.delay(500);
     },
 
-    // Activate spell card
     async activateSpell(cardInstance) {
         gameState.playerHand = gameState.playerHand.filter(c => c.uniqueId !== cardInstance.uniqueId);
 
-        // Animate spell activation
         DOMManager.showBattleMessage('ACTIVATE!', 'summon');
         Utils.playSound('sfx-spell');
         Utils.logMessage(`Yami Yugi activates ${cardInstance.name}!`, 'player');
 
-        // Apply spell effect
         await this.resolveSpellEffect(cardInstance, 'player');
 
-        // Send to graveyard
         gameState.playerGraveyard.push(cardInstance);
         gameState.playerGYCount++;
         DOMManager.updateDeckCounters();
@@ -1348,14 +1378,12 @@ const PlayerActions = {
         await Utils.delay(800);
     },
 
-    // Resolve spell effect
     async resolveSpellEffect(cardInstance, owner) {
         const effect = cardInstance.effect;
         const opponent = owner === 'player' ? 'opponent' : 'player';
 
         switch (effect) {
             case 'destroy_spell_trap':
-                // Destroy 1 random spell/trap on opponent's field
                 const opponentST = owner === 'player' ? gameState.opponentSpellsTraps : gameState.playerSpellsTraps;
                 const occupiedST = opponentST.map((c, i) => c ? i : -1).filter(i => i !== -1);
 
@@ -1374,6 +1402,7 @@ const PlayerActions = {
                         Utils.logMessage(`${cardInstance.name} destroys ${targetCard.name}!`, 'damage');
                         DOMManager.renderField();
                         DOMManager.updateDeckCounters();
+                        DOMManager.screenShake('medium');
                     }
                 } else {
                     Utils.logMessage(`No Spell/Trap cards to destroy.`, 'system');
@@ -1381,7 +1410,6 @@ const PlayerActions = {
                 break;
 
             case 'destroy_all_monsters':
-                // Dark Hole - destroy all monsters
                 const destroyAll = (zones, gy) => {
                     zones.forEach((card, i) => {
                         if (card) {
@@ -1404,8 +1432,7 @@ const PlayerActions = {
                 DOMManager.updateDeckCounters();
                 break;
 
-            case 'destroy_lowest':
-                // Fissure - destroy opponent's lowest ATK monster
+            case 'destroy_lowest_atk':
                 const opponentMonsters = owner === 'player' ? gameState.opponentMonsters : gameState.playerMonsters;
                 const gy = owner === 'player' ? gameState.opponentGraveyard : gameState.playerGraveyard;
 
@@ -1435,17 +1462,10 @@ const PlayerActions = {
                 break;
 
             case 'burn_800':
-                // Ookazi - inflict 800 damage
                 await GameController.dealDamage(opponent, 800);
                 break;
 
-            case 'heal_1000':
-                // Red Medicine - heal 1000
-                await GameController.healLP(owner, 1000);
-                break;
-
             case 'special_summon_gy':
-                // Monster Reborn - special summon from GY
                 const sourceGY = owner === 'player' ? gameState.playerGraveyard : gameState.opponentGraveyard;
                 const targetMonsters = owner === 'player' ? gameState.playerMonsters : gameState.opponentMonsters;
                 const emptyZone = targetMonsters.findIndex(z => z === null);
@@ -1469,20 +1489,20 @@ const PlayerActions = {
                 }
                 break;
 
-            case 'boost_atk_300':
-                // Boost ATK
-                const myMonsters = owner === 'player' ? gameState.playerMonsters : gameState.opponentMonsters;
-                const firstMonster = myMonsters.find(c => c && c.faceUp);
-                if (firstMonster) {
-                    firstMonster.atk = (firstMonster.atk || 0) + 300;
-                    Utils.logMessage(`${firstMonster.name} gains 300 ATK!`, owner);
-                    DOMManager.renderField();
-                }
+            case 'flip_and_lock':
+                // Swords of Revealing Light - flip opponent's monsters face-up
+                const opponentField = owner === 'player' ? gameState.opponentMonsters : gameState.playerMonsters;
+                opponentField.forEach(card => {
+                    if (card && !card.faceUp) {
+                        card.faceUp = true;
+                    }
+                });
+                Utils.logMessage(`All opponent's monsters are flipped face-up!`, owner);
+                DOMManager.renderField();
                 break;
         }
     },
 
-    // Click monster on field (attack selection)
     onFieldMonsterClick(cardInstance, cardEl) {
         if (!Utils.isPlayerTurn()) return;
         if (gameState.currentPhase !== CONFIG.PHASES.BATTLE) {
@@ -1500,19 +1520,15 @@ const PlayerActions = {
             return;
         }
 
-        // Check if opponent has monsters
         const opponentHasMonsters = gameState.opponentMonsters.some(m => m !== null);
 
         if (!opponentHasMonsters) {
-            // Direct attack
             this.declareDirectAttack(cardInstance);
         } else {
-            // Enter targeting mode
             gameState.selectedCard = cardInstance;
             gameState.targetingMode = true;
             cardEl.classList.add('selected');
 
-            // Highlight opponent's monsters as targetable
             document.querySelectorAll('.opponent-field .monster-zone').forEach(zone => {
                 if (zone.classList.contains('occupied')) {
                     zone.classList.add('targetable');
@@ -1523,13 +1539,14 @@ const PlayerActions = {
         }
     },
 
-    // Right click monster on field
     onFieldMonsterRightClick(cardInstance, cardEl, event) {
         if (!Utils.isPlayerTurn()) return;
 
         gameState.contextMenuTarget = { cardInstance, cardEl };
 
         const menu = DOMManager.elements.contextMenu;
+        if (!menu) return;
+
         menu.style.left = `${event.clientX}px`;
         menu.style.top = `${event.clientY}px`;
         menu.classList.remove('hidden');
@@ -1539,34 +1556,37 @@ const PlayerActions = {
         });
 
         if (cardInstance.faceUp) {
-            document.querySelector('[data-action="change-pos"]').style.display = '';
+            const changePos = document.querySelector('[data-action="change-pos"]');
+            if (changePos) changePos.style.display = '';
             if (gameState.currentPhase === CONFIG.PHASES.BATTLE) {
-                document.querySelector('[data-action="attack"]').style.display = '';
+                const attack = document.querySelector('[data-action="attack"]');
+                if (attack) attack.style.display = '';
             }
         } else {
-            document.querySelector('[data-action="flip"]').style.display = '';
+            const flip = document.querySelector('[data-action="flip"]');
+            if (flip) flip.style.display = '';
         }
 
-        document.querySelector('[data-action="cancel"]').style.display = '';
+        const viewCard = document.querySelector('[data-action="view-card"]');
+        if (viewCard) viewCard.style.display = '';
+
+        const cancel = document.querySelector('[data-action="cancel"]');
+        if (cancel) cancel.style.display = '';
     },
 
-    // Click opponent's monster (attack target)
     onOpponentMonsterClick(cardInstance, zoneIndex) {
         if (!gameState.targetingMode || !gameState.selectedCard) return;
 
         this.declareAttack(gameState.selectedCard, cardInstance, zoneIndex);
     },
 
-    // Declare attack on monster
     async declareAttack(attacker, defender, defenderZoneIndex) {
-        // Clear targeting
         gameState.targetingMode = false;
         document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
         document.querySelectorAll('.targetable').forEach(el => el.classList.remove('targetable'));
 
         const attackerEl = document.querySelector(`[data-unique-id="${attacker.uniqueId}"]`);
 
-        // Attack animation
         if (attackerEl) {
             attackerEl.classList.add('attack-lunge');
             setTimeout(() => attackerEl.classList.remove('attack-lunge'), 600);
@@ -1577,10 +1597,8 @@ const PlayerActions = {
 
         await Utils.delay(600);
 
-        // Resolve battle
         const result = Utils.calculateBattleDamage(attacker, defender, defender.position);
 
-        // Apply damage to defender's LP
         if (result.damage > 0) {
             if (defender.position === 'attack') {
                 await GameController.dealDamage('opponent', result.damage);
@@ -1591,7 +1609,6 @@ const PlayerActions = {
             DOMManager.impactFlash();
         }
 
-        // Destroy cards
         if (result.defenderDestroyed) {
             gameState.opponentMonsters[defenderZoneIndex] = null;
             gameState.opponentGraveyard.push(defender);
@@ -1609,7 +1626,6 @@ const PlayerActions = {
             }
         }
 
-        // Mark as attacked
         gameState.attackedThisTurn.add(attacker.uniqueId);
 
         DOMManager.renderField();
@@ -1619,7 +1635,6 @@ const PlayerActions = {
         await Utils.delay(500);
     },
 
-    // Direct attack
     async declareDirectAttack(attacker) {
         gameState.targetingMode = false;
 
@@ -1646,17 +1661,14 @@ const PlayerActions = {
         await Utils.delay(500);
     },
 
-    // Click spell/trap on field
     onFieldSpellTrapClick(cardInstance, cardEl) {
         if (!Utils.isPlayerTurn()) return;
 
         if (cardInstance.type === CONFIG.CARD_TYPES.SPELL && !cardInstance.faceUp) {
-            // Flip activate
             this.activateSetSpell(cardInstance);
         }
     },
 
-    // Activate set spell/trap
     async activateSetSpell(cardInstance) {
         cardInstance.faceUp = true;
 
@@ -1666,7 +1678,6 @@ const PlayerActions = {
 
         await this.resolveSpellEffect(cardInstance, 'player');
 
-        // Send to graveyard
         gameState.playerSpellsTraps[cardInstance.zoneIndex] = null;
         gameState.playerGraveyard.push(cardInstance);
         gameState.playerGYCount++;
@@ -1679,22 +1690,21 @@ const PlayerActions = {
 };
 
 // ============================================= //
-// 9. GAME CONTROLLER (Main Game Logic)          //
+// 9. GAME CONTROLLER                            //
 // ============================================= //
 
 const GameController = {
-    // Initialize game
     async init() {
         DOMManager.init();
-        gameState = new GameState();
+        Utils.loadSettings();
 
         this.bindEventListeners();
         this.initCursorFollower();
+        this.initTutorial();
 
         await this.runLoadingSequence();
     },
 
-    // Run loading sequence
     async runLoadingSequence() {
         const loadingTexts = [
             'INITIALIZING DUEL DISK...',
@@ -1706,11 +1716,15 @@ const GameController = {
         ];
 
         for (let i = 0; i <= 100; i += 5) {
-            DOMManager.elements.loadingProgress.style.width = `${i}%`;
-            DOMManager.elements.loadingPercent.textContent = `${i}%`;
+            if (DOMManager.elements.loadingProgress) {
+                DOMManager.elements.loadingProgress.style.width = `${i}%`;
+            }
+            if (DOMManager.elements.loadingPercent) {
+                DOMManager.elements.loadingPercent.textContent = `${i}%`;
+            }
 
             const textIndex = Math.floor(i / 20);
-            if (textIndex < loadingTexts.length) {
+            if (textIndex < loadingTexts.length && DOMManager.elements.loadingText) {
                 DOMManager.elements.loadingText.textContent = loadingTexts[textIndex];
             }
 
@@ -1719,25 +1733,22 @@ const GameController = {
 
         await Utils.delay(500);
 
-        DOMManager.elements.loadingScreen.classList.remove('active');
-        DOMManager.elements.mainMenu.classList.add('active');
+        if (DOMManager.elements.loadingScreen) {
+            DOMManager.elements.loadingScreen.classList.remove('active');
+        }
+        if (DOMManager.elements.mainMenu) {
+            DOMManager.elements.mainMenu.classList.add('active');
+        }
     },
 
-    // Start duel
     async startDuel() {
-        DOMManager.elements.mainMenu.classList.remove('active');
-        DOMManager.elements.gameContainer.classList.remove('hidden');
+        if (DOMManager.elements.mainMenu) DOMManager.elements.mainMenu.classList.remove('active');
+        if (DOMManager.elements.gameContainer) DOMManager.elements.gameContainer.classList.remove('hidden');
         gameState.gameState = 'playing';
 
-        // Initialize decks
-        gameState.playerDeck = Utils.shuffleArray([...PLAYER_DECK]).map(id => Utils.createCardInstance(id));
-        gameState.opponentDeck = Utils.shuffleArray([...OPPONENT_DECK]).map(id => Utils.createCardInstance(id));
+        gameState.playerDeck = Utils.shuffleArray([...PLAYER_DECK]).map(id => Utils.createCardInstance(id, 'player'));
+        gameState.opponentDeck = Utils.shuffleArray([...OPPONENT_DECK]).map(id => Utils.createCardInstance(id, 'opponent'));
 
-        // Set owners
-        gameState.playerDeck.forEach(c => c.owner = 'player');
-        gameState.opponentDeck.forEach(c => c.owner = 'opponent');
-
-        // Draw starting hands
         for (let i = 0; i < CONFIG.STARTING_HAND_SIZE; i++) {
             this.drawCard('player');
             this.drawCard('opponent');
@@ -1757,17 +1768,14 @@ const GameController = {
         Utils.logMessage('Duel Start! Yami Yugi vs Seto Kaiba!', 'system');
         Utils.showToast('DUEL START!', 'May the best duelist win!', 'success');
 
-        // Start with player's turn
         await this.startTurn('player');
     },
 
-    // Draw card
     drawCard(owner) {
         const deck = owner === 'player' ? gameState.playerDeck : gameState.opponentDeck;
         const hand = owner === 'player' ? gameState.playerHand : gameState.opponentHand;
 
         if (deck.length === 0) {
-            // Deck out - lose
             this.endGame(owner === 'player' ? 'opponent' : 'player');
             return null;
         }
@@ -1794,7 +1802,6 @@ const GameController = {
         return card;
     },
 
-    // Start turn
     async startTurn(owner) {
         gameState.turnOwner = owner;
         gameState.normalSummonUsed = false;
@@ -1802,7 +1809,6 @@ const GameController = {
         gameState.hasDrawnThisTurn = false;
         gameState.battlePhaseEntered = false;
 
-        // Reset summonedThisTurn flags
         const monsters = owner === 'player' ? gameState.playerMonsters : gameState.opponentMonsters;
         monsters.forEach(card => {
             if (card) {
@@ -1814,7 +1820,6 @@ const GameController = {
         DOMManager.updatePhaseDisplay();
         DOMManager.updateActionButtons();
 
-        // First turn skip draw for player
         if (gameState.turnNumber > 1 || owner === 'opponent') {
             await this.goToPhase(CONFIG.PHASES.DRAW);
         } else {
@@ -1822,7 +1827,6 @@ const GameController = {
         }
     },
 
-    // Go to phase
     async goToPhase(phase) {
         gameState.currentPhase = phase;
         DOMManager.updatePhaseDisplay();
@@ -1833,7 +1837,6 @@ const GameController = {
             [CONFIG.PHASES.STANDBY]: 'STANDBY PHASE',
             [CONFIG.PHASES.MAIN1]: 'MAIN PHASE 1',
             [CONFIG.PHASES.BATTLE]: 'BATTLE PHASE',
-            [CONFIG.PHASES.MAIN2]: 'MAIN PHASE 2',
             [CONFIG.PHASES.END]: 'END PHASE'
         };
 
@@ -1847,7 +1850,6 @@ const GameController = {
                 await this.executeStandbyPhase();
                 break;
             case CONFIG.PHASES.MAIN1:
-            case CONFIG.PHASES.MAIN2:
                 await this.executeMainPhase();
                 break;
             case CONFIG.PHASES.BATTLE:
@@ -1859,14 +1861,12 @@ const GameController = {
         }
     },
 
-    // Next phase logic
     async nextPhase() {
         const phaseOrder = [
             CONFIG.PHASES.DRAW,
             CONFIG.PHASES.STANDBY,
             CONFIG.PHASES.MAIN1,
             CONFIG.PHASES.BATTLE,
-            CONFIG.PHASES.MAIN2,
             CONFIG.PHASES.END
         ];
 
@@ -1875,41 +1875,32 @@ const GameController = {
         if (currentIndex < phaseOrder.length - 1) {
             await this.goToPhase(phaseOrder[currentIndex + 1]);
         } else {
-            // End of turn
             await this.endTurn();
         }
     },
 
-    // Execute Draw Phase
     async executeDrawPhase() {
         if (!gameState.hasDrawnThisTurn) {
             this.drawCard(gameState.turnOwner);
             gameState.hasDrawnThisTurn = true;
             Utils.playSound('sfx-draw');
 
-            // Auto advance to standby
             await Utils.delay(500);
             await this.goToPhase(CONFIG.PHASES.STANDBY);
         }
     },
 
-    // Execute Standby Phase
     async executeStandbyPhase() {
-        // Placeholder for card effects that trigger in standby
         await Utils.delay(300);
         await this.goToPhase(CONFIG.PHASES.MAIN1);
     },
 
-    // Execute Main Phase
     async executeMainPhase() {
         if (gameState.turnOwner === 'opponent') {
-            // AI takes control
             await AIOpponent.takeMainPhaseActions();
         }
-        // Player waits for input
     },
 
-    // Execute Battle Phase
     async executeBattlePhase() {
         gameState.battlePhaseEntered = true;
 
@@ -1918,14 +1909,11 @@ const GameController = {
         }
     },
 
-    // Execute End Phase
     async executeEndPhase() {
-        // End of turn effects would go here
         await Utils.delay(300);
         await this.endTurn();
     },
 
-    // End turn
     async endTurn() {
         gameState.turnNumber++;
 
@@ -1934,7 +1922,6 @@ const GameController = {
         await this.startTurn(nextOwner);
     },
 
-    // Deal damage to LP
     async dealDamage(owner, amount) {
         if (owner === 'player') {
             gameState.playerLP = Math.max(0, gameState.playerLP - amount);
@@ -1946,7 +1933,6 @@ const GameController = {
             gameState.damageDealt.player += amount;
         }
 
-        // Damage floater
         const hudId = owner === 'player' ? 'player-hud' : 'opponent-hud';
         const hudEl = document.getElementById(hudId);
         DOMManager.showDamageFloater(hudEl, amount);
@@ -1954,7 +1940,6 @@ const GameController = {
         Utils.logMessage(`${owner === 'player' ? 'Yami Yugi' : 'Seto Kaiba'} takes ${amount} damage!`, 'damage');
         Utils.playSound('sfx-damage');
 
-        // Check win condition
         if (gameState.playerLP <= 0) {
             await this.endGame('opponent');
         } else if (gameState.opponentLP <= 0) {
@@ -1964,7 +1949,6 @@ const GameController = {
         await Utils.delay(500);
     },
 
-    // Heal LP
     async healLP(owner, amount) {
         if (owner === 'player') {
             gameState.playerLP = Math.min(CONFIG.STARTING_LP, gameState.playerLP + amount);
@@ -1979,7 +1963,6 @@ const GameController = {
         await Utils.delay(500);
     },
 
-    // End game
     async endGame(winner) {
         gameState.gameState = 'ended';
         gameState.winner = winner;
@@ -1991,50 +1974,47 @@ const GameController = {
         const resultTurns = document.getElementById('result-turns');
 
         if (winner === 'player') {
-            resultTitle.textContent = 'VICTORY!';
-            resultTitle.className = 'result-title victory';
-            resultSubtitle.textContent = 'You have defeated Seto Kaiba!';
+            if (resultTitle) resultTitle.textContent = 'VICTORY!';
+            if (resultTitle) resultTitle.className = 'result-title victory';
+            if (resultSubtitle) resultSubtitle.textContent = 'You have defeated Seto Kaiba!';
             Utils.playSound('sfx-victory');
         } else {
-            resultTitle.textContent = 'DEFEAT';
-            resultTitle.className = 'result-title defeat';
-            resultSubtitle.textContent = 'Seto Kaiba has defeated you...';
+            if (resultTitle) resultTitle.textContent = 'DEFEAT';
+            if (resultTitle) resultTitle.className = 'result-title defeat';
+            if (resultSubtitle) resultSubtitle.textContent = 'Seto Kaiba has defeated you...';
             Utils.playSound('sfx-defeat');
         }
 
-        resultDamage.textContent = Utils.formatNumber(gameState.damageDealt.player);
-        resultCards.textContent = gameState.cardsPlayed.player;
-        resultTurns.textContent = gameState.turnNumber;
+        if (resultDamage) resultDamage.textContent = Utils.formatNumber(gameState.damageDealt.player);
+        if (resultCards) resultCards.textContent = gameState.cardsPlayed.player;
+        if (resultTurns) resultTurns.textContent = gameState.turnNumber;
 
         await Utils.delay(500);
-        document.getElementById('result-overlay').classList.remove('hidden');
+        const resultOverlay = document.getElementById('result-overlay');
+        if (resultOverlay) resultOverlay.classList.remove('hidden');
     },
 
-    // Rematch
     async rematch() {
-        document.getElementById('result-overlay').classList.add('hidden');
+        const resultOverlay = document.getElementById('result-overlay');
+        if (resultOverlay) resultOverlay.classList.add('hidden');
         gameState.reset();
-        DOMManager.elements.gameContainer.classList.add('hidden');
+        if (DOMManager.elements.gameContainer) DOMManager.elements.gameContainer.classList.add('hidden');
         await this.startDuel();
     },
 
-    // Return to main menu
     returnToMenu() {
-        document.getElementById('result-overlay').classList.add('hidden');
-        DOMManager.elements.gameContainer.classList.add('hidden');
-        DOMManager.elements.mainMenu.classList.add('active');
+        const resultOverlay = document.getElementById('result-overlay');
+        if (resultOverlay) resultOverlay.classList.add('hidden');
+        if (DOMManager.elements.gameContainer) DOMManager.elements.gameContainer.classList.add('hidden');
+        if (DOMManager.elements.mainMenu) DOMManager.elements.mainMenu.classList.add('active');
         gameState.reset();
     },
 
-    // Bind event listeners
     bindEventListeners() {
         // Menu buttons
         DOMManager.elements.btnStartDuel?.addEventListener('click', () => this.startDuel());
-        DOMManager.elements.btnDeckBuilder?.addEventListener('click', () => Utils.showToast('Coming Soon', 'Deck Builder is under development.', 'info'));
-        DOMManager.elements.btnTutorial?.addEventListener('click', () => Utils.showToast('Coming Soon', 'Tutorial is under development.', 'info'));
-        DOMManager.elements.btnSettings?.addEventListener('click', () => {
-            DOMManager.elements.settingsModal.classList.add('active');
-        });
+        DOMManager.elements.btnTutorial?.addEventListener('click', () => this.showTutorial());
+        DOMManager.elements.btnSettings?.addEventListener('click', () => this.showSettings());
 
         // Action buttons
         DOMManager.elements.btnNextPhase?.addEventListener('click', () => {
@@ -2063,36 +2043,27 @@ const GameController = {
         // Inspector close
         DOMManager.elements.inspectorClose?.addEventListener('click', () => CardInspector.hide());
 
-        // Graveyard
+        // Graveyard buttons
+        DOMManager.elements.btnPlayerGY?.addEventListener('click', () => DOMManager.showGraveyard('player'));
+        DOMManager.elements.btnOpponentGY?.addEventListener('click', () => DOMManager.showGraveyard('opponent'));
+        DOMManager.elements.btnPlayerGYField?.addEventListener('click', () => DOMManager.showGraveyard('player'));
+        DOMManager.elements.btnOpponentGYField?.addEventListener('click', () => DOMManager.showGraveyard('opponent'));
         DOMManager.elements.graveyardClose?.addEventListener('click', () => DOMManager.hideGraveyard());
+        DOMManager.elements.graveyardCloseBtn?.addEventListener('click', () => DOMManager.hideGraveyard());
 
-        document.getElementById('player-gy-count')?.addEventListener('click', () => {
-            DOMManager.showGraveyard('player');
-        });
-
-        document.getElementById('opponent-gy-count')?.addEventListener('click', () => {
-            DOMManager.showGraveyard('opponent');
-        });
-
-        // Deck modal close
-        DOMManager.elements.deckClose?.addEventListener('click', () => {
-            DOMManager.elements.deckModal.classList.remove('active');
-        });
-
-        // Settings close
+        // Settings
         DOMManager.elements.settingsClose?.addEventListener('click', () => {
-            DOMManager.elements.settingsModal.classList.remove('active');
+            if (DOMManager.elements.settingsModal) DOMManager.elements.settingsModal.classList.remove('active');
         });
-
-        // Dialog
-        DOMManager.elements.dialogCancel?.addEventListener('click', () => {
-            DOMManager.elements.dialogModal.classList.remove('active');
+        DOMManager.elements.settingsSave?.addEventListener('click', () => {
+            this.saveSettingsFromUI();
+            if (DOMManager.elements.settingsModal) DOMManager.elements.settingsModal.classList.remove('active');
         });
 
         // Log toggle
         DOMManager.elements.logToggle?.addEventListener('click', () => {
-            DOMManager.elements.logContent.classList.toggle('collapsed');
-            DOMManager.elements.logToggle.classList.toggle('collapsed');
+            if (DOMManager.elements.logContent) DOMManager.elements.logContent.classList.toggle('collapsed');
+            if (DOMManager.elements.logToggle) DOMManager.elements.logToggle.classList.toggle('collapsed');
         });
 
         // Context menu actions
@@ -2100,14 +2071,14 @@ const GameController = {
             item.addEventListener('click', (e) => {
                 const action = item.dataset.action;
                 this.handleContextAction(action);
-                DOMManager.elements.contextMenu.classList.add('hidden');
+                if (DOMManager.elements.contextMenu) DOMManager.elements.contextMenu.classList.add('hidden');
             });
         });
 
         // Close context menu on click outside
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.context-menu-container') && !e.target.closest('.card')) {
-                DOMManager.elements.contextMenu.classList.add('hidden');
+                if (DOMManager.elements.contextMenu) DOMManager.elements.contextMenu.classList.add('hidden');
             }
         });
 
@@ -2124,46 +2095,32 @@ const GameController = {
             });
         });
 
+        // Target selector cancel
+        DOMManager.elements.selectorCancel?.addEventListener('click', () => {
+            gameState.selectedCard = null;
+            gameState.targetingMode = false;
+            document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.targetable').forEach(el => el.classList.remove('targetable'));
+            if (DOMManager.elements.targetSelector) DOMManager.elements.targetSelector.classList.add('hidden');
+        });
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            switch (e.key) {
-                case ' ':
-                case 'Space':
-                    e.preventDefault();
-                    if (Utils.isPlayerTurn()) this.nextPhase();
-                    break;
-                case 'Escape':
-                    if (gameState.targetingMode) {
-                        gameState.selectedCard = null;
-                        gameState.targetingMode = false;
-                        document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
-                        document.querySelectorAll('.targetable').forEach(el => el.classList.remove('targetable'));
-                    }
-                    DOMManager.elements.contextMenu.classList.add('hidden');
-                    break;
-                case 'g':
-                case 'G':
-                    DOMManager.showGraveyard('player');
-                    break;
-                case '`':
-                    DOMManager.elements.debugPanel.classList.toggle('hidden');
-                    break;
+            if (e.key === ' ' || e.code === 'Space') {
+                e.preventDefault();
+                if (Utils.isPlayerTurn()) this.nextPhase();
+            } else if (e.key === 'Escape') {
+                if (gameState.targetingMode) {
+                    gameState.selectedCard = null;
+                    gameState.targetingMode = false;
+                    document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+                    document.querySelectorAll('.targetable').forEach(el => el.classList.remove('targetable'));
+                }
+                if (DOMManager.elements.contextMenu) DOMManager.elements.contextMenu.classList.add('hidden');
             }
-        });
-
-        // Debug panel buttons
-        document.querySelectorAll('.debug-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                this.handleDebugAction(btn.dataset.debug);
-            });
-        });
-
-        DOMManager.elements.debugClose?.addEventListener('click', () => {
-            DOMManager.elements.debugPanel.classList.add('hidden');
         });
     },
 
-    // Handle context menu actions
     handleContextAction(action) {
         const target = gameState.contextMenuTarget;
         if (!target) return;
@@ -2211,7 +2168,6 @@ const GameController = {
                 break;
 
             case 'flip':
-                // Flip summon
                 if (!cardInstance.faceUp && cardInstance.position === 'defense') {
                     cardInstance.faceUp = true;
                     cardInstance.position = 'attack';
@@ -2222,12 +2178,15 @@ const GameController = {
                 break;
 
             case 'change-pos':
-                // Change battle position
                 if (cardInstance.faceUp) {
                     cardInstance.position = cardInstance.position === 'attack' ? 'defense' : 'attack';
                     DOMManager.renderMonsterOnField('player', cardInstance.zoneIndex, cardInstance);
                     Utils.logMessage(`${cardInstance.name} changes to ${cardInstance.position} position.`, 'player');
                 }
+                break;
+
+            case 'view-card':
+                CardInspector.show(cardInstance);
                 break;
 
             case 'cancel':
@@ -2237,74 +2196,14 @@ const GameController = {
         gameState.contextMenuTarget = null;
     },
 
-    // Debug actions
-    handleDebugAction(action) {
-        switch (action) {
-            case 'player-lp-1000':
-                this.dealDamage('player', 1000);
-                break;
-            case 'opponent-lp-1000':
-                this.dealDamage('opponent', 1000);
-                break;
-            case 'heal-all':
-                gameState.playerLP = CONFIG.STARTING_LP;
-                gameState.opponentLP = CONFIG.STARTING_LP;
-                DOMManager.updateLPDisplay('player', gameState.playerLP);
-                DOMManager.updateLPDisplay('opponent', gameState.opponentLP);
-                break;
-            case 'draw-1':
-                this.drawCard('player');
-                break;
-            case 'draw-5':
-                for (let i = 0; i < 5; i++) this.drawCard('player');
-                break;
-            case 'add-dark-magician':
-                const dm = Utils.createCardInstance('dark-magician');
-                dm.owner = 'player';
-                gameState.playerHand.push(dm);
-                DOMManager.renderPlayerHand();
-                break;
-            case 'add-blue-eyes':
-                const bed = Utils.createCardInstance('blue-eyes-white-dragon');
-                bed.owner = 'player';
-                gameState.playerHand.push(bed);
-                DOMManager.renderPlayerHand();
-                break;
-            case 'skip-to-battle':
-                gameState.currentPhase = CONFIG.PHASES.BATTLE;
-                DOMManager.updatePhaseDisplay();
-                break;
-            case 'end-turn':
-                this.endTurn();
-                break;
-            case 'reset-game':
-                location.reload();
-                break;
-            case 'force-win':
-                this.endGame('player');
-                break;
-        }
-
-        this.debugLog(`Executed: ${action}`);
-    },
-
-    // Debug log
-    debugLog(message) {
-        const log = DOMManager.elements.debugLog;
-        if (!log) return;
-
-        const entry = document.createElement('div');
-        entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-        log.appendChild(entry);
-        log.scrollTop = log.scrollHeight;
-    },
-
-    // Initialize cursor follower
     initCursorFollower() {
         const follower = DOMManager.elements.cursorFollower;
         const followerInner = DOMManager.elements.cursorFollowerInner;
 
         if (!follower || !followerInner) return;
+
+        // Only enable on non-touch devices
+        if ('ontouchstart' in window) return;
 
         document.addEventListener('mousemove', (e) => {
             follower.style.left = `${e.clientX}px`;
@@ -2312,7 +2211,6 @@ const GameController = {
             followerInner.style.left = `${e.clientX}px`;
             followerInner.style.top = `${e.clientY}px`;
 
-            // Check if hovering over interactive element
             const target = e.target;
             if (target.closest('.card') || target.closest('button') || target.closest('.zone')) {
                 follower.classList.add('hovering');
@@ -2320,6 +2218,163 @@ const GameController = {
                 follower.classList.remove('hovering');
             }
         });
+    },
+
+    showSettings() {
+        if (!DOMManager.elements.settingsModal) return;
+
+        // Populate settings UI
+        const sfxEnabled = document.getElementById('sfx-enabled');
+        const musicEnabled = document.getElementById('music-enabled');
+        const animationSpeed = document.getElementById('animation-speed');
+        const showDamage = document.getElementById('show-damage');
+        const showPhases = document.getElementById('show-phases');
+        const bgEffects = document.getElementById('bg-effects');
+        const particleEffects = document.getElementById('particle-effects');
+        const cardGlow = document.getElementById('card-glow');
+
+        if (sfxEnabled) sfxEnabled.checked = gameState.settings.sfxEnabled;
+        if (musicEnabled) musicEnabled.checked = gameState.settings.musicEnabled;
+        if (animationSpeed) animationSpeed.value = gameState.settings.animationSpeed;
+        if (showDamage) showDamage.checked = gameState.settings.showDamage;
+        if (showPhases) showPhases.checked = gameState.settings.showPhases;
+        if (bgEffects) bgEffects.checked = gameState.settings.bgEffects;
+        if (particleEffects) particleEffects.checked = gameState.settings.particleEffects;
+        if (cardGlow) cardGlow.checked = gameState.settings.cardGlow;
+
+        DOMManager.elements.settingsModal.classList.add('active');
+    },
+
+    saveSettingsFromUI() {
+        const sfxEnabled = document.getElementById('sfx-enabled');
+        const musicEnabled = document.getElementById('music-enabled');
+        const animationSpeed = document.getElementById('animation-speed');
+        const showDamage = document.getElementById('show-damage');
+        const showPhases = document.getElementById('show-phases');
+        const bgEffects = document.getElementById('bg-effects');
+        const particleEffects = document.getElementById('particle-effects');
+        const cardGlow = document.getElementById('card-glow');
+
+        if (sfxEnabled) gameState.settings.sfxEnabled = sfxEnabled.checked;
+        if (musicEnabled) gameState.settings.musicEnabled = musicEnabled.checked;
+        if (animationSpeed) gameState.settings.animationSpeed = animationSpeed.value;
+        if (showDamage) gameState.settings.showDamage = showDamage.checked;
+        if (showPhases) gameState.settings.showPhases = showPhases.checked;
+        if (bgEffects) gameState.settings.bgEffects = bgEffects.checked;
+        if (particleEffects) gameState.settings.particleEffects = particleEffects.checked;
+        if (cardGlow) gameState.settings.cardGlow = cardGlow.checked;
+
+        Utils.saveSettings();
+        Utils.showToast('Settings Saved', 'Your preferences have been saved.', 'success');
+    },
+
+    initTutorial() {
+        this.tutorialSteps = [
+            {
+                title: 'Welcome to Yu-Gi-Oh! HTML Edition',
+                image: '🎴',
+                text: 'This is a Speed Duel format card game. You start with 4000 Life Points and 4 cards in hand. Defeat Seto Kaiba to win!'
+            },
+            {
+                title: 'The Game Field',
+                image: '🏟️',
+                text: 'The field has 3 Monster Zones and 3 Spell/Trap Zones. You can only Normal Summon once per turn.'
+            },
+            {
+                title: 'Summoning Monsters',
+                image: '⚔️',
+                text: 'Click a monster card in your hand to Summon it in Attack Mode. Right-click (or long-press on mobile) to Set it face-down in Defense Mode.'
+            },
+            {
+                title: 'Spell & Trap Cards',
+                image: '🪄',
+                text: 'Spell cards can be activated immediately or Set face-down. Trap cards must be Set and can only be activated next turn.'
+            },
+            {
+                title: 'Battle Phase',
+                image: '💥',
+                text: 'During Battle Phase, click your monsters to attack. If opponent has no monsters, you can attack directly for full damage!'
+            },
+            {
+                title: 'Battle Calculation',
+                image: '⚖️',
+                text: 'ATK vs ATK: Higher wins, difference = damage. ATK vs DEF: If ATK > DEF, destroy but no damage. If ATK < DEF, you take the difference.'
+            },
+            {
+                title: 'Winning the Duel',
+                image: '🏆',
+                text: 'Reduce your opponent\'s Life Points to 0 to win! Or force them to run out of cards (Deck Out).'
+            },
+            {
+                title: 'Ready to Duel!',
+                image: '🎮',
+                text: 'You\'re ready to face Seto Kaiba! Use the phase buttons to progress through your turn. Good luck, Duelist!'
+            }
+        ];
+
+        this.currentTutorialStep = 0;
+    },
+
+    showTutorial() {
+        this.currentTutorialStep = 0;
+        this.updateTutorialDisplay();
+        if (DOMManager.elements.tutorialOverlay) {
+            DOMManager.elements.tutorialOverlay.classList.remove('hidden');
+            DOMManager.elements.tutorialOverlay.classList.add('active');
+        }
+
+        // Bind tutorial buttons
+        DOMManager.elements.tutorialPrev?.addEventListener('click', () => this.prevTutorialStep());
+        DOMManager.elements.tutorialNext?.addEventListener('click', () => this.nextTutorialStep());
+        DOMManager.elements.tutorialSkip?.addEventListener('click', () => this.closeTutorial());
+    },
+
+    updateTutorialDisplay() {
+        if (!DOMManager.elements.tutorialTitle || !DOMManager.elements.tutorialImage || !DOMManager.elements.tutorialText) return;
+
+        const step = this.tutorialSteps[this.currentTutorialStep];
+        if (!step) return;
+
+        DOMManager.elements.tutorialTitle.textContent = step.title;
+        DOMManager.elements.tutorialImage.textContent = step.image;
+        DOMManager.elements.tutorialText.textContent = step.text;
+
+        if (DOMManager.elements.tutorialStep) {
+            DOMManager.elements.tutorialStep.textContent = this.currentTutorialStep + 1;
+        }
+        if (DOMManager.elements.tutorialTotal) {
+            DOMManager.elements.tutorialTotal.textContent = this.tutorialSteps.length;
+        }
+
+        if (DOMManager.elements.tutorialPrev) {
+            DOMManager.elements.tutorialPrev.disabled = this.currentTutorialStep === 0;
+        }
+        if (DOMManager.elements.tutorialNext) {
+            DOMManager.elements.tutorialNext.textContent = this.currentTutorialStep === this.tutorialSteps.length - 1 ? 'FINISH' : 'NEXT';
+        }
+    },
+
+    prevTutorialStep() {
+        if (this.currentTutorialStep > 0) {
+            this.currentTutorialStep--;
+            this.updateTutorialDisplay();
+        }
+    },
+
+    nextTutorialStep() {
+        if (this.currentTutorialStep < this.tutorialSteps.length - 1) {
+            this.currentTutorialStep++;
+            this.updateTutorialDisplay();
+        } else {
+            this.closeTutorial();
+        }
+    },
+
+    closeTutorial() {
+        if (DOMManager.elements.tutorialOverlay) {
+            DOMManager.elements.tutorialOverlay.classList.add('hidden');
+            DOMManager.elements.tutorialOverlay.classList.remove('active');
+        }
     }
 };
 
@@ -2328,31 +2383,27 @@ const GameController = {
 // ============================================= //
 
 const AIOpponent = {
-    // Main AI logic for main phase
     async takeMainPhaseActions() {
         await Utils.delay(CONFIG.AI_THINK_DELAY);
 
-        // 1. Try to activate spell cards from hand
+        // 1. Try to activate spell cards
         await this.tryActivateSpells();
 
-        // 2. Try to summon strongest available monster
+        // 2. Try to summon strongest monster
         await this.trySummonMonster();
 
-        // 3. Set remaining cards if possible
+        // 3. Set remaining cards
         await this.trySetCards();
 
         await Utils.delay(CONFIG.AI_ACTION_DELAY);
 
-        // Proceed to battle phase
         await GameController.nextPhase();
     },
 
-    // AI tries to activate spells
     async tryActivateSpells() {
         const spells = gameState.opponentHand.filter(c => c.type === CONFIG.CARD_TYPES.SPELL);
 
         for (const spell of spells) {
-            // Check if we should use this spell
             if (spell.effect === 'destroy_all_monsters' && gameState.playerMonsters.some(m => m !== null)) {
                 await this.activateAISpell(spell);
                 break;
@@ -2374,7 +2425,6 @@ const AIOpponent = {
         }
     },
 
-    // AI activates a spell
     async activateAISpell(cardInstance) {
         gameState.opponentHand = gameState.opponentHand.filter(c => c.uniqueId !== cardInstance.uniqueId);
 
@@ -2384,10 +2434,8 @@ const AIOpponent = {
 
         await Utils.delay(CONFIG.AI_ACTION_DELAY);
 
-        // Resolve effect
         await PlayerActions.resolveSpellEffect(cardInstance, 'opponent');
 
-        // Send to GY
         gameState.opponentGraveyard.push(cardInstance);
         gameState.opponentGYCount++;
         DOMManager.updateDeckCounters();
@@ -2396,7 +2444,6 @@ const AIOpponent = {
         await Utils.delay(CONFIG.AI_ACTION_DELAY);
     },
 
-    // AI tries to summon monster
     async trySummonMonster() {
         const monsters = gameState.opponentHand
             .filter(c => c.type === CONFIG.CARD_TYPES.MONSTER)
@@ -2407,10 +2454,8 @@ const AIOpponent = {
         if (monsters.length > 0 && emptyZone !== -1) {
             const bestMonster = monsters[0];
 
-            // Remove from hand
             gameState.opponentHand = gameState.opponentHand.filter(c => c.uniqueId !== bestMonster.uniqueId);
 
-            // Set up card
             bestMonster.owner = 'opponent';
             bestMonster.zoneIndex = emptyZone;
             bestMonster.zoneType = 'monster';
@@ -2424,7 +2469,6 @@ const AIOpponent = {
             DOMManager.renderOpponentHand();
             DOMManager.renderMonsterOnField('opponent', emptyZone, bestMonster);
 
-            // Summon effect
             const zoneEl = document.getElementById(`opponent-monster-${emptyZone}`);
             if (zoneEl) {
                 const summonEffect = document.createElement('div');
@@ -2441,7 +2485,6 @@ const AIOpponent = {
         }
     },
 
-    // AI sets cards
     async trySetCards() {
         const settableCards = gameState.opponentHand.filter(c =>
             c.type === CONFIG.CARD_TYPES.TRAP || c.type === CONFIG.CARD_TYPES.SPELL
@@ -2458,6 +2501,7 @@ const AIOpponent = {
                 card.faceUp = false;
 
                 gameState.opponentSpellsTraps[emptyZone] = card;
+                gameState.trapSetTurn.set(card.uniqueId, gameState.turnNumber);
 
                 DOMManager.renderSpellTrapOnField('opponent', emptyZone, card);
                 DOMManager.renderOpponentHand();
@@ -2469,29 +2513,23 @@ const AIOpponent = {
         }
     },
 
-    // AI battle phase actions
     async takeBattlePhaseActions() {
         await Utils.delay(CONFIG.AI_THINK_DELAY);
 
-        // Find all opponent monsters that can attack
         const attackableMonsters = gameState.opponentMonsters.filter(
             m => m && m.faceUp && m.position === 'attack' && !m.hasAttacked && !m.summonedThisTurn
         );
 
-        // Sort by ATK (strongest first)
         attackableMonsters.sort((a, b) => (b.atk || 0) - (a.atk || 0));
 
         for (const attacker of attackableMonsters) {
-            // Check if player has monsters
             const playerMonsters = gameState.playerMonsters
                 .map((m, i) => ({ card: m, index: i }))
                 .filter(m => m.card !== null);
 
             if (playerMonsters.length === 0) {
-                // Direct attack
                 await this.aiDirectAttack(attacker);
             } else {
-                // Find best target
                 const target = this.findBestTarget(attacker, playerMonsters);
                 if (target) {
                     await this.aiAttack(attacker, target.card, target.index);
@@ -2500,20 +2538,16 @@ const AIOpponent = {
 
             await Utils.delay(CONFIG.AI_ATTACK_DELAY);
 
-            // Check if game ended
             if (gameState.gameState === 'ended') break;
         }
 
-        // End battle phase
         await Utils.delay(CONFIG.AI_ACTION_DELAY);
         await GameController.nextPhase();
     },
 
-    // Find best attack target
     findBestTarget(attacker, playerMonsters) {
         const attackerAtk = attacker.atk || 0;
 
-        // Priority 1: Attack monsters we can destroy without losing our monster
         const destroyableTargets = playerMonsters.filter(t => {
             if (t.card.position === 'attack') {
                 return attackerAtk > (t.card.atk || 0);
@@ -2523,7 +2557,6 @@ const AIOpponent = {
         });
 
         if (destroyableTargets.length > 0) {
-            // Choose the one that deals most damage
             return destroyableTargets.sort((a, b) => {
                 const damageA = a.card.position === 'attack' ? attackerAtk - (a.card.atk || 0) : 0;
                 const damageB = b.card.position === 'attack' ? attackerAtk - (b.card.atk || 0) : 0;
@@ -2531,7 +2564,6 @@ const AIOpponent = {
             })[0];
         }
 
-        // Priority 2: Attack weakest monster anyway
         return playerMonsters.sort((a, b) => {
             const valueA = a.card.position === 'attack' ? (a.card.atk || 0) : (a.card.def || 0);
             const valueB = b.card.position === 'attack' ? (b.card.atk || 0) : (b.card.def || 0);
@@ -2539,7 +2571,6 @@ const AIOpponent = {
         })[0];
     },
 
-    // AI attacks a monster
     async aiAttack(attacker, defender, defenderZoneIndex) {
         const attackerEl = document.querySelector(`[data-unique-id="${attacker.uniqueId}"]`);
 
@@ -2554,10 +2585,8 @@ const AIOpponent = {
 
         await Utils.delay(600);
 
-        // Resolve battle
         const result = Utils.calculateBattleDamage(attacker, defender, defender.position);
 
-        // Apply damage
         if (result.damage > 0) {
             if (defender.position === 'attack') {
                 await GameController.dealDamage('player', result.damage);
@@ -2568,7 +2597,6 @@ const AIOpponent = {
             DOMManager.impactFlash();
         }
 
-        // Destroy cards
         if (result.defenderDestroyed) {
             gameState.playerMonsters[defenderZoneIndex] = null;
             gameState.playerGraveyard.push(defender);
@@ -2594,7 +2622,6 @@ const AIOpponent = {
         await Utils.delay(500);
     },
 
-    // AI direct attack
     async aiDirectAttack(attacker) {
         const attackerEl = document.querySelector(`[data-unique-id="${attacker.uniqueId}"]`);
 
@@ -2625,22 +2652,16 @@ const AIOpponent = {
 // 11. INITIALIZATION                            //
 // ============================================= //
 
-// Global game state
-let gameState;
-
-// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     GameController.init();
 });
 
-// Prevent context menu globally
 document.addEventListener('contextmenu', (e) => {
     if (e.target.closest('.card')) {
         e.preventDefault();
     }
 });
 
-// Disable drag on images
 document.addEventListener('dragstart', (e) => {
     if (e.target.tagName === 'IMG') {
         e.preventDefault();
@@ -2648,9 +2669,9 @@ document.addEventListener('dragstart', (e) => {
 });
 
 // ============================================= //
-// 12. END OF MASTER GAME ENGINE                 //
+// 12. END OF ULTIMATE GAME ENGINE               //
 // ============================================= //
 
 console.log('%c YU-GI-OH! HTML EDITION ', 'background: linear-gradient(90deg, #ffd700, #00ffff); color: #000; font-size: 24px; font-weight: bold; padding: 10px;');
-console.log('%c Version 3.8 MAX - Powered by Qwen 3.8 Max ', 'color: #00ffff; font-size: 12px;');
-console.log('%c Type ` to open debug panel ', 'color: #ffd700; font-size: 10px;');
+console.log('%c Version 3.8 ULTIMATE - Powered by Qwen 3.8 Max ', 'color: #00ffff; font-size: 12px;');
+console.log('%c All systems operational - Ready to duel! ', 'color: #ffd700; font-size: 10px;');
