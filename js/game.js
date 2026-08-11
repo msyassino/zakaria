@@ -361,4 +361,11 @@ window.GAME = (function(){
       selA=uid;mode='attacker';view.renderAll();AUDIO.sfx.click();FX.msg('🎯 اختر هدفًا أحمر — أو هجومًا مباشرًا')}
   }
   function rmTrib(uid){tribSel=tribSel.filter(u=>u!==uid)}
+
+  // جسور الإدخال العامة لـ main.js
+GAME.handleCardPublic = handleCard;
+GAME.handClickPublic = handClick;
+GAME.fieldClickPublic = fieldClick;
+Object.defineProperty(GAME,'pendIdxPublic',{get:()=>pendIdx});
+GAME.forceLose = ()=>endGame('o','استسلمت');
 })();
