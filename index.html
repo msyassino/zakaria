@@ -1,535 +1,137 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>يوجي-أو! المعركة المقدسة</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: linear-gradient(135deg, #1a0a2e, #2d1b4e);
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: #fff;
-        }
-        #game {
-            background: #2a1a3e;
-            border-radius: 20px;
-            padding: 20px;
-            max-width: 900px;
-            width: 100%;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
-            border: 2px solid #ffd700;
-        }
-        #header {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 20px;
-            background: #1a0a2e;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-        .hp {
-            color: #ff4444;
-            font-weight: bold;
-        }
-        .hp.enemy { color: #ff6644; }
-        #field {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 15px;
-            background: #1e1030;
-            border-radius: 15px;
-            min-height: 400px;
-        }
-        .zone {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            min-height: 120px;
-            padding: 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            border: 1px dashed rgba(255,215,0,0.3);
-        }
-        .zone.enemy-zone { background: rgba(255,0,0,0.1); }
-        .zone.player-zone { background: rgba(0,200,255,0.1); }
-        .card {
-            width: 100px;
-            height: 140px;
-            background: linear-gradient(145deg, #f5e6c8, #d4b896);
-            border-radius: 10px;
-            border: 2px solid #b8956a;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 8px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            color: #1a0a2e;
-            font-size: 12px;
-            text-align: center;
-            position: relative;
-        }
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(255,215,0,0.5);
-        }
-        .card.selected {
-            border: 4px solid #ffd700;
-            box-shadow: 0 0 30px #ffd700;
-        }
-        .card .name { font-weight: bold; font-size: 14px; margin-bottom: 5px; }
-        .card .atk-def { font-size: 11px; color: #333; }
-        .card .effect { font-size: 10px; color: #555; margin-top: 5px; }
-        .card-face-down {
-            background: #2a1a3e;
-            border: 2px solid #ffd700;
-            color: #ffd700;
-        }
-        #controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            background: #ffd700;
-            color: #1a0a2e;
-        }
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(255,215,0,0.6);
-        }
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .btn-danger { background: #ff4444; color: #fff; }
-        .btn-success { background: #44ff88; color: #1a0a2e; }
-        #log {
-            margin-top: 15px;
-            padding: 10px;
-            background: #1a0a2e;
-            border-radius: 10px;
-            min-height: 60px;
-            font-size: 14px;
-            border: 1px solid #ffd70033;
-            max-height: 100px;
-            overflow-y: auto;
-        }
-        #log .turn { color: #ffd700; }
-        #log .damage { color: #ff4444; }
-        #log .heal { color: #44ff88; }
-        #hand {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 10px;
-            min-height: 100px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 10px;
-            margin-top: 10px;
-        }
-        #hand .card {
-            width: 80px;
-            height: 110px;
-            font-size: 10px;
-        }
-        .turn-indicator {
-            text-align: center;
-            font-size: 20px;
-            padding: 5px;
-            background: #1a0a2e;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-        @media (max-width: 600px) {
-            .card { width: 70px; height: 100px; font-size: 9px; }
-            #hand .card { width: 60px; height: 85px; }
-            .btn { padding: 8px 16px; font-size: 14px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مبارزة الروابط ⚔ DUEL RUSH MAX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div id="game">
-    <div id="header">
-        <span>⚔️ يوجي-أو! المعركة المقدسة</span>
-        <span>الدور: <span id="turnDisplay">1</span></span>
+<div id="bgEnergy"></div>
+<div id="rays"></div>
+<canvas id="fxC"></canvas>
+<div id="hurtV"></div>
+<div id="banner"></div>
+<div id="toast"></div>
+
+<!-- العنوان -->
+<div class="screen show" id="scrTitle">
+  <div class="titleCards" id="titleCards"></div>
+  <h1 class="logo">مبارزة الروابط</h1>
+  <div class="logo-sub">⚡ DUEL RUSH MAX — أقوى نسخة ⚡</div>
+  <div class="menu-btns">
+    <button class="btn big gold pulse" id="bToSelect">⚔ ابدأ المبارزة</button>
+    <div class="row2">
+      <button class="btn blue" id="bHelp">📜 القوانين</button>
+      <button class="btn dark" id="bColl">📖 البطاقات</button>
     </div>
-
-    <div id="field">
-        <div style="display:flex; justify-content:space-between; padding:0 10px;">
-            <span class="hp enemy">👹 الخصم: <span id="enemyHP">4000</span></span>
-            <span>📜 <span id="enemyHandCount">0</span> بطاقة</span>
-        </div>
-        <div class="zone enemy-zone" id="enemyZone"></div>
-
-        <div class="turn-indicator" id="turnIndicator">🎯 دور اللاعب</div>
-
-        <div class="zone player-zone" id="playerZone"></div>
-        <div style="display:flex; justify-content:space-between; padding:0 10px;">
-            <span class="hp">❤️ اللاعب: <span id="playerHP">4000</span></span>
-            <span>📜 <span id="playerHandCount">0</span> بطاقة</span>
-        </div>
-    </div>
-
-    <div id="hand"></div>
-
-    <div id="controls">
-        <button class="btn btn-success" id="attackBtn">⚔️ هجوم</button>
-        <button class="btn" id="endTurnBtn">⏭️ إنهاء الدور</button>
-        <button class="btn btn-danger" id="resetBtn">🔄 إعادة</button>
-    </div>
-
-    <div id="log">
-        <div>📖 سجل المعركة...</div>
-    </div>
+  </div>
+  <div class="chips">
+    <span class="chip">🏆 انتصاراتك: <b id="winsC">0</b></span>
+    <span class="chip on" id="tSnd">🔊 الصوت</span>
+    <span class="chip" id="tFast">⏩ خصم سريع</span>
+  </div>
 </div>
 
-<script>
-// ============================================================
-//  كل كود اللعبة هنا - انسخ والصق واشتغل فوراً!
-// ============================================================
+<!-- اختيار المبارز -->
+<div class="screen" id="scrSelect">
+  <h1 class="logo small">اختر مبارزك</h1>
+  <div class="charGrid" id="charGrid"></div>
+  <button class="btn dark small" id="bBackT">→ رجوع</button>
+</div>
 
-const GAME = {
-    player: { hp: 4000, hand: [], field: [], maxField: 5 },
-    enemy: { hp: 4000, hand: [], field: [], maxField: 5 },
-    turn: 1,
-    isPlayerTurn: true,
-    selectedCard: null,
-    gameOver: false,
-    log: []
-};
+<!-- المبارزة -->
+<div class="screen" id="scrDuel">
+  <div id="arena">
+    <div class="duelbar" id="oBar">
+      <div class="ava" id="oAva">👺</div>
+      <div class="pinfo">
+        <div class="pname"><span id="oName">الخصم</span><span class="cnt">📚<b id="oDeck">0</b> ⚰<b id="oGy">0</b> ✋<b id="oHandN">0</b></span></div>
+        <div class="lpwrap"><div class="fill foe" id="oFill"></div><div class="lpnum" id="oLP">4000</div><div class="lpnotch"></div></div>
+      </div>
+    </div>
+    <div class="srow" id="oSrow"></div>
+    <div class="mrow foe" id="oMrow"></div>
+    <div id="mid"><span id="turnLbl"></span><div id="msg"></div></div>
+    <div class="mrow mine" id="pMrow"></div>
+    <div class="srow" id="pSrow"></div>
+    <div class="duelbar" id="pBar">
+      <div class="ava" id="pAva">🌅</div>
+      <div class="pinfo">
+        <div class="pname"><span id="pName">أنت</span><span class="cnt">📚<b id="pDeck">0</b> ⚰<b id="pGy">0</b></span></div>
+        <div class="lpwrap"><div class="fill mine" id="pFill"></div><div class="lpnum" id="pLP">4000</div><div class="lpnotch"></div></div>
+      </div>
+    </div>
+    <div id="hand"></div>
+    <div class="ab" id="ab">
+      <button class="btn small gold hidden" id="bSkill">✨ مهارة</button>
+      <button class="btn small red" id="bBattle">⚔ القتال</button>
+      <button class="btn small dark" id="bEnd">⌛ إنهاء الدور</button>
+      <button class="btn small blue hidden" id="aDirect">💥 هجوم مباشر</button>
+      <button class="btn small dark hidden" id="bCancel">✕ إلغاء</button>
+      <button class="btn small hidden" id="bSumA">⚔ استدعاء هجومي</button>
+      <button class="btn small blue hidden" id="bSumD">🛡 تثبيت دفاعي</button>
+      <button class="btn small dark hidden" id="bSumC">✕</button>
+      <span class="trHint hidden" id="trHint"></span>
+      <button class="btn small hidden" id="bTrOk">✔ ضحِّ واستدعِ</button>
+      <button class="btn small dark hidden" id="bTrCancel">✕</button>
+      <button class="btn small red hidden" id="bSurr">🏳</button>
+    </div>
+  </div>
+</div>
 
-// ========== قاعدة البطاقات ==========
-const CARD_DB = [
-    { id: 1, name: 'المحارب الأسطوري', atk: 1800, def: 1200, effect: '+500 ATK إذا معك وحش آخر' },
-    { id: 2, name: 'الساحر المظلم', atk: 2500, def: 2100, effect: 'يعكس تعويذة واحدة' },
-    { id: 3, name: 'التنين الأبيض', atk: 3000, def: 2500, effect: 'وحش أسطوري نادر' },
-    { id: 4, name: 'الجندي الآلي', atk: 1500, def: 1800, effect: 'إذا دمر → +500 HP للاعب' },
-    { id: 5, name: 'حورية البحر', atk: 1200, def: 900, effect: 'تسرق بطاقة من الخصم' },
-    { id: 6, name: 'فارس الظلام', atk: 2000, def: 1600, effect: 'يهاجم مباشرة إذا كان وحش الخصم ضعيف' },
-    { id: 7, name: 'الساحر الصغير', atk: 800, def: 1000, effect: 'يسحب بطاقة عند الاستدعاء' },
-    { id: 8, name: 'التنين الناري', atk: 2200, def: 1400, effect: 'يحرق الخصم بـ 300 نقطة' },
-];
+<!-- القوانين -->
+<div class="screen" id="scrHelp" style="background:rgba(6,3,20,.72)">
+  <div class="panel"><button class="xbtn" data-back="scrTitle">✕</button><h2>📜 قوانين المبارزة</h2>
+    <div class="rules">
+      ⚔ كل مبارز يملك <b>4000 نقطة حياة</b> وورقة من 20 بطاقة. اسحب بطاقة كل دور.<br>
+      🃏 وحوش المستوى ١–٤ تُستدعى مباشرة. المستوى ٥–٦ تحتاج <b>تضحية</b>، والمستوى ٧+ تحتاج <b>ضحيتين</b>!<br>
+      🛡 التثبيت الدفاعي مقلوبًا — يُكشف عند الهجوم عليه. الدفاعي لا يهاجم.<br>
+      🌀 التعاويذ فورية. <b>الفخاخ تُثبّت مقلوبة</b> وتُفعَّل لحظة الهجوم/الاستدعاء — بيدك القرار!<br>
+      ⚡ وحش هجومي ضد هجومي = الفرق ضررًا. ضد دفاعي = لا ضرر (إلا <b>الثاقبة</b> 🗡). لا وحوش؟ <b>هجوم مباشر</b>!<br>
+      ✨ لكل مبارز <b>مهارة واحدة</b> تُستخدم مرة عند تحقق شرطها.<br>
+      🏆 نفاد الأوراق = هزيمة. في النهاية تحصل على تقييم C/B/A!
+    </div>
+  </div>
+</div>
 
-// ========== دوال مساعدة ==========
-function randomCard() {
-    return { ...CARD_DB[Math.floor(Math.random() * CARD_DB.length)] };
-}
+<!-- البطاقات -->
+<div class="screen" id="scrColl" style="background:rgba(6,3,20,.72)">
+  <div class="panel"><button class="xbtn" data-back="scrTitle">✕</button><h2>📖 كل البطاقات</h2><div class="cgrid" id="collGrid"></div></div>
+</div>
 
-function shuffleArray(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-}
+<!-- النهاية -->
+<div class="screen" id="scrEnd">
+  <div id="endRays"></div>
+  <div class="end-title" id="endTitle">النصر!</div>
+  <div class="rankBox"><div class="rankL A" id="rankL">A</div><div class="stars" id="rankStars">✦✦✦</div></div>
+  <div class="endStats" id="endStats"></div>
+  <div class="hint" id="endSub"></div>
+  <div class="menu-btns">
+    <button class="btn big gold pulse" id="bAgain">⚔ مبارزة جديدة</button>
+    <button class="btn dark" id="bTitle2">🏠 القائمة</button>
+  </div>
+</div>
 
-function addLog(msg, type = '') {
-    GAME.log.unshift({ msg, type });
-    if (GAME.log.length > 50) GAME.log.pop();
-    renderLog();
-}
+<!-- نافذة الفخ -->
+<div class="screen" id="ask">
+  <div class="askP">
+    <h3 id="askT">فخ!</h3>
+    <p id="askD"></p>
+    <div class="row2"><button class="btn small" id="askYes">⚡ تفعيل</button><button class="btn small dark" id="askNo">تمرير</button></div>
+    <div class="askBarW"><div id="askBar"></div></div>
+  </div>
+</div>
 
-// ========== نظام المعركة ==========
-function startGame() {
-    GAME.player.hp = 4000;
-    GAME.player.hand = [];
-    GAME.player.field = [];
-    GAME.enemy.hp = 4000;
-    GAME.enemy.hand = [];
-    GAME.enemy.field = [];
-    GAME.turn = 1;
-    GAME.isPlayerTurn = true;
-    GAME.selectedCard = null;
-    GAME.gameOver = false;
-    GAME.log = [];
+<div id="zoom"><div id="zoomCard"></div><div class="ztxt" id="zoomTxt"></div></div>
 
-    // توزيع البطاقات
-    for (let i = 0; i < 5; i++) {
-        GAME.player.hand.push(randomCard());
-        GAME.enemy.hand.push(randomCard());
-    }
-
-    addLog('🎮 بدأت المعركة! اللاعب يبدأ أولاً.', '');
-    renderAll();
-}
-
-function drawCard(target) {
-    const who = target === 'player' ? GAME.player : GAME.enemy;
-    if (who.hand.length < 10) {
-        who.hand.push(randomCard());
-        addLog(`${target === 'player' ? 'اللاعب' : 'الخصم'} سحب بطاقة.`, '');
-        return true;
-    }
-    return false;
-}
-
-function summonCard(target, cardIndex) {
-    const who = target === 'player' ? GAME.player : GAME.enemy;
-    if (who.field.length >= who.maxField) {
-        addLog('⚠️ الحقل ممتلئ!', '');
-        return false;
-    }
-    if (who.hand.length <= cardIndex) return false;
-    const card = who.hand.splice(cardIndex, 1)[0];
-    who.field.push(card);
-    addLog(`${target === 'player' ? 'اللاعب' : 'الخصم'} استدعى ${card.name} (ATK:${card.atk})`, '');
-    return true;
-}
-
-function attackPlayer(attackerCard, targetIndex = 0) {
-    if (GAME.gameOver) return;
-    if (!GAME.isPlayerTurn) {
-        addLog('⛔ ليس دورك!', '');
-        return;
-    }
-    if (GAME.enemy.hp <= 0) {
-        addLog('🎉 الخصم مهزوم!', '');
-        return;
-    }
-
-    // هجوم مباشر
-    if (GAME.enemy.field.length === 0) {
-        GAME.enemy.hp -= attackerCard.atk;
-        addLog(`⚡ ${attackerCard.name} يهاجم مباشرة! -${attackerCard.atk} HP`, 'damage');
-        checkWin();
-        renderAll();
-        return;
-    }
-
-    // هجوم على وحش الخصم (اختر أول واحد)
-    const target = GAME.enemy.field[targetIndex % GAME.enemy.field.length];
-    if (attackerCard.atk > target.atk) {
-        GAME.enemy.field.splice(targetIndex % GAME.enemy.field.length, 1);
-        GAME.enemy.hp -= (attackerCard.atk - target.atk);
-        addLog(`💥 ${attackerCard.name} دمر ${target.name}! -${attackerCard.atk - target.atk} HP`, 'damage');
-        // تأثير الجندي الآلي
-        if (target.effect.includes('+500 HP')) {
-            GAME.player.hp = Math.min(4000, GAME.player.hp + 500);
-            addLog('❤️ الجندي الآلي أعاد 500 HP!', 'heal');
-        }
-    } else if (attackerCard.atk < target.atk) {
-        GAME.player.hp -= (target.atk - attackerCard.atk);
-        const idx = GAME.player.field.indexOf(attackerCard);
-        if (idx !== -1) GAME.player.field.splice(idx, 1);
-        addLog(`💔 ${attackerCard.name} دمر بواسطة ${target.name}! -${target.atk - attackerCard.atk} HP`, 'damage');
-    } else {
-        addLog(`🤝 تعادل! ${attackerCard.name} و ${target.name} تدمرا.`, '');
-        const idx = GAME.player.field.indexOf(attackerCard);
-        if (idx !== -1) GAME.player.field.splice(idx, 1);
-        const idx2 = GAME.enemy.field.indexOf(target);
-        if (idx2 !== -1) GAME.enemy.field.splice(idx2, 1);
-    }
-
-    checkWin();
-    renderAll();
-}
-
-function enemyTurn() {
-    if (GAME.gameOver) return;
-    if (GAME.isPlayerTurn) {
-        addLog('⏳ انتظر دور الخصم...', '');
-        return;
-    }
-
-    // الخصم يسحب بطاقة
-    drawCard('enemy');
-
-    // الخصم يستدعي إذا كان عنده أقل من 3 وحوش
-    if (GAME.enemy.field.length < 3 && GAME.enemy.hand.length > 0) {
-        summonCard('enemy', 0);
-    }
-
-    // الخصم يهاجم
-    if (GAME.enemy.field.length > 0 && GAME.player.hp > 0) {
-        const attacker = GAME.enemy.field[0];
-        if (GAME.player.field.length === 0) {
-            GAME.player.hp -= attacker.atk;
-            addLog(`👹 الخصم يهاجم مباشرة! -${attacker.atk} HP`, 'damage');
-        } else {
-            const target = GAME.player.field[0];
-            if (attacker.atk > target.atk) {
-                GAME.player.field.splice(0, 1);
-                GAME.player.hp -= (attacker.atk - target.atk);
-                addLog(`👹 ${attacker.name} دمر ${target.name}! -${attacker.atk - target.atk} HP`, 'damage');
-            } else if (attacker.atk < target.atk) {
-                GAME.enemy.field.splice(0, 1);
-                addLog(`🛡️ ${target.name} دمر ${attacker.name}!`, '');
-            } else {
-                GAME.player.field.splice(0, 1);
-                GAME.enemy.field.splice(0, 1);
-                addLog(`🤝 تعادل!`, '');
-            }
-        }
-    }
-
-    checkWin();
-    renderAll();
-    GAME.turn++;
-    GAME.isPlayerTurn = true;
-    document.getElementById('turnDisplay').textContent = GAME.turn;
-    addLog(`🔄 بداية الدور ${GAME.turn} - دور اللاعب`, 'turn');
-    renderAll();
-}
-
-function checkWin() {
-    if (GAME.player.hp <= 0) {
-        GAME.player.hp = 0;
-        GAME.gameOver = true;
-        addLog('💀 هزمت! الخصم يفوز!', 'damage');
-        renderAll();
-        return true;
-    }
-    if (GAME.enemy.hp <= 0) {
-        GAME.enemy.hp = 0;
-        GAME.gameOver = true;
-        addLog('🏆 انتصرت! مبروك!', 'heal');
-        renderAll();
-        return true;
-    }
-    return false;
-}
-
-// ========== العرض (Rendering) ==========
-function renderAll() {
-    renderZone('playerZone', GAME.player.field, 'player');
-    renderZone('enemyZone', GAME.enemy.field, 'enemy');
-    renderHand();
-    document.getElementById('playerHP').textContent = GAME.player.hp;
-    document.getElementById('enemyHP').textContent = GAME.enemy.hp;
-    document.getElementById('playerHandCount').textContent = GAME.player.hand.length;
-    document.getElementById('enemyHandCount').textContent = GAME.enemy.hand.length;
-    document.getElementById('turnDisplay').textContent = GAME.turn;
-    document.getElementById('turnIndicator').textContent = GAME.isPlayerTurn ? '🎯 دور اللاعب' : '👹 دور الخصم';
-    document.getElementById('attackBtn').disabled = !GAME.isPlayerTurn || GAME.gameOver;
-}
-
-function renderZone(zoneId, cards, owner) {
-    const zone = document.getElementById(zoneId);
-    zone.innerHTML = '';
-    cards.forEach((card, idx) => {
-        const div = document.createElement('div');
-        div.className = 'card';
-        if (owner === 'enemy' && !GAME.isPlayerTurn) {
-            div.classList.add('card-face-down');
-            div.textContent = '❓ وجه للأسفل';
-        } else {
-            div.innerHTML = `
-                <div class="name">${card.name}</div>
-                <div class="atk-def">⚔️${card.atk} 🛡️${card.def}</div>
-                <div class="effect">${card.effect || ''}</div>
-            `;
-        }
-        if (owner === 'player' && GAME.selectedCard === card) {
-            div.classList.add('selected');
-        }
-        if (owner === 'player' && GAME.isPlayerTurn && !GAME.gameOver) {
-            div.onclick = () => selectCard(card);
-        }
-        zone.appendChild(div);
-    });
-}
-
-function renderHand() {
-    const hand = document.getElementById('hand');
-    hand.innerHTML = '';
-    GAME.player.hand.forEach((card, idx) => {
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `
-            <div class="name">${card.name}</div>
-            <div class="atk-def">⚔️${card.atk} 🛡️${card.def}</div>
-            <div class="effect">${card.effect || ''}</div>
-        `;
-        if (GAME.isPlayerTurn && !GAME.gameOver && GAME.player.field.length < GAME.player.maxField) {
-            div.style.cursor = 'pointer';
-            div.onclick = () => {
-                if (summonCard('player', idx)) renderAll();
-            };
-        } else {
-            div.style.opacity = '0.6';
-        }
-        hand.appendChild(div);
-    });
-}
-
-function renderLog() {
-    const logDiv = document.getElementById('log');
-    logDiv.innerHTML = GAME.log.slice(0, 20).map(e =>
-        `<div class="${e.type}">${e.msg}</div>`
-    ).join('');
-}
-
-// ========== التفاعل ==========
-function selectCard(card) {
-    if (!GAME.isPlayerTurn || GAME.gameOver) return;
-    if (GAME.selectedCard === card) {
-        GAME.selectedCard = null;
-    } else if (GAME.player.field.includes(card)) {
-        GAME.selectedCard = card;
-        addLog(`🔍 تم اختيار ${card.name}`, '');
-    }
-    renderAll();
-}
-
-function handleAttack() {
-    if (GAME.gameOver) return;
-    if (!GAME.isPlayerTurn) {
-        addLog('⛔ ليس دورك!', '');
-        return;
-    }
-    if (GAME.selectedCard && GAME.player.field.includes(GAME.selectedCard)) {
-        attackPlayer(GAME.selectedCard);
-        GAME.selectedCard = null;
-        renderAll();
-    } else {
-        addLog('⚠️ اختر وحشاً أولاً (اضغط على بطاقتك في الحقل)', '');
-    }
-}
-
-function endTurn() {
-    if (GAME.gameOver) return;
-    if (!GAME.isPlayerTurn) {
-        addLog('⛔ ليس دورك!', '');
-        return;
-    }
-    GAME.isPlayerTurn = false;
-    // سحب بطاقة في بداية دور الخصم
-    drawCard('enemy');
-    renderAll();
-    addLog('👹 دور الخصم...', 'turn');
-    // هجوم الخصم بعد تأخير بسيط
-    setTimeout(() => {
-        enemyTurn();
-    }, 500);
-}
-
-// ========== بدء اللعبة ==========
-document.getElementById('attackBtn').onclick = handleAttack;
-document.getElementById('endTurnBtn').onclick = endTurn;
-document.getElementById('resetBtn').onclick = startGame;
-
-startGame();
-</script>
+<script src="js/data.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/game.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
