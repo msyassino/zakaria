@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Yu-Gi-Oh HTML Edition - A massive, fully functional web browser card game inspired by Duel Links. Speed Duel Format.">
+    <meta name="description" content="Yu-Gi-Oh HTML Edition - Ultimate Speed Duel Card Game">
     <meta name="author" content="Qwen 3.8 Max">
     <meta name="theme-color" content="#0a0f24">
-    <title>Yu-Gi-Oh! HTML Edition | Speed Duel Arena</title>
+    <title>Yu-Gi-Oh! HTML Edition | Ultimate Speed Duel Arena</title>
     
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="https://images.ygoprodeck.com/images/cards/46986414.jpg">
@@ -16,15 +16,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Teko:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body id="game-body" data-game-state="loading" data-turn="player" data-phase="standby">
+<body id="game-body" data-game-state="loading">
 
     <!-- ============================================= -->
-    <!-- LOADING / SPLASH SCREEN                        -->
+    <!-- LOADING SCREEN                                 -->
     <!-- ============================================= -->
     <div id="loading-screen" class="screen-overlay active">
         <div class="loading-background">
             <div class="loading-grid"></div>
             <div class="loading-orb"></div>
+            <div class="loading-particles"></div>
         </div>
         <div class="loading-content">
             <div class="logo-container">
@@ -33,7 +34,7 @@
                     <span class="logo-yu">YU-GI-OH!</span>
                     <span class="logo-edition">HTML EDITION</span>
                 </h1>
-                <div class="logo-subtitle">SPEED DUEL ARENA</div>
+                <div class="logo-subtitle">ULTIMATE SPEED DUEL</div>
             </div>
             <div class="loading-bar-container">
                 <div class="loading-bar">
@@ -43,10 +44,12 @@
                 <div class="loading-percent" id="loading-percent">0%</div>
             </div>
             <div class="loading-tips">
-                <p class="tip" data-tip="0">"It's time to D-D-D-D-D-D-D-D-DUEL!"</p>
-                <p class="tip hidden" data-tip="1">Monsters in Defense Position cannot attack.</p>
-                <p class="tip hidden" data-tip="2">Use Spell Cards to change the tide of battle.</p>
-                <p class="tip hidden" data-tip="3">Direct attacks deal damage when no monsters stand guard.</p>
+                <p class="tip active" data-tip="0">"It's time to D-D-D-D-D-D-D-D-DUEL!"</p>
+                <p class="tip" data-tip="1">Monsters in Defense Position cannot attack.</p>
+                <p class="tip" data-tip="2">Use Spell Cards to change the tide of battle.</p>
+                <p class="tip" data-tip="3">Direct attacks deal damage when no monsters stand guard.</p>
+                <p class="tip" data-tip="4">Trap Cards can only be activated the turn after they are Set.</p>
+                <p class="tip" data-tip="5">You can only Normal Summon once per turn.</p>
             </div>
         </div>
     </div>
@@ -58,17 +61,19 @@
         <div class="menu-background">
             <div class="menu-particles"></div>
             <div class="menu-cards-floating">
-                <div class="floating-card" style="--delay: 0s; --x: 10%; --y: 20%;"><img src="https://images.ygoprodeck.com/images/cards/46986414.jpg" alt="Dark Magician"></div>
-                <div class="floating-card" style="--delay: 2s; --x: 85%; --y: 30%;"><img src="https://images.ygoprodeck.com/images/cards/89631139.jpg" alt="Blue-Eyes"></div>
-                <div class="floating-card" style="--delay: 4s; --x: 20%; --y: 75%;"><img src="https://images.ygoprodeck.com/images/cards/91152256.jpg" alt="Celtic Guardian"></div>
-                <div class="floating-card" style="--delay: 6s; --x: 75%; --y: 70%;"><img src="https://images.ygoprodeck.com/images/cards/14898066.jpg" alt="Vorse Raider"></div>
+                <div class="floating-card" style="--delay: 0s; --x: 10%; --y: 20%; --rot: -15deg;"><img src="https://images.ygoprodeck.com/images/cards/46986414.jpg" alt="Dark Magician"></div>
+                <div class="floating-card" style="--delay: 2s; --x: 85%; --y: 30%; --rot: 10deg;"><img src="https://images.ygoprodeck.com/images/cards/89631139.jpg" alt="Blue-Eyes"></div>
+                <div class="floating-card" style="--delay: 4s; --x: 20%; --y: 75%; --rot: 5deg;"><img src="https://images.ygoprodeck.com/images/cards/40640057.jpg" alt="Kuriboh"></div>
+                <div class="floating-card" style="--delay: 6s; --x: 75%; --y: 70%; --rot: -10deg;"><img src="https://images.ygoprodeck.com/images/cards/14898066.jpg" alt="Vorse Raider"></div>
+                <div class="floating-card" style="--delay: 8s; --x: 50%; --y: 15%; --rot: 8deg;"><img src="https://images.ygoprodeck.com/images/cards/72302403.jpg" alt="Swords"></div>
+                <div class="floating-card" style="--delay: 10s; --x: 90%; --y: 85%; --rot: -12deg;"><img src="https://images.ygoprodeck.com/images/cards/44095762.jpg" alt="Mirror Force"></div>
             </div>
         </div>
         <div class="menu-content">
             <div class="menu-logo">
                 <h1 class="menu-title">YU-GI-OH!</h1>
                 <h2 class="menu-subtitle">HTML EDITION</h2>
-                <div class="menu-tagline">ENTER THE DUEL</div>
+                <div class="menu-tagline">ENTER THE SHADOW REALM</div>
             </div>
             <div class="menu-buttons">
                 <button class="menu-btn primary" id="btn-start-duel">
@@ -76,13 +81,9 @@
                     <span class="btn-text">START DUEL</span>
                     <span class="btn-glow"></span>
                 </button>
-                <button class="menu-btn secondary" id="btn-deck-builder">
-                    <span class="btn-icon">📚</span>
-                    <span class="btn-text">DECK BUILDER</span>
-                </button>
                 <button class="menu-btn secondary" id="btn-tutorial">
                     <span class="btn-icon">📖</span>
-                    <span class="btn-text">TUTORIAL</span>
+                    <span class="btn-text">HOW TO PLAY</span>
                 </button>
                 <button class="menu-btn secondary" id="btn-settings">
                     <span class="btn-icon">⚙️</span>
@@ -90,7 +91,7 @@
                 </button>
             </div>
             <div class="menu-footer">
-                <div class="menu-version">v3.8.0 MAX</div>
+                <div class="menu-version">v3.8 ULTIMATE</div>
                 <div class="menu-credits">Powered by Qwen 3.8 Max</div>
             </div>
         </div>
@@ -121,8 +122,6 @@
                                 <text x="50" y="55" text-anchor="middle" fill="#00ffff" font-size="36" font-family="Orbitron" font-weight="900">K</text>
                             </svg>
                         </div>
-                        <div class="portrait-name">SETO KAIBA</div>
-                        <div class="portrait-title">CEO of KaibaCorp</div>
                     </div>
                 </div>
                 <div class="hud-info">
@@ -143,25 +142,19 @@
                                 <span class="digit" data-place="1">0</span>
                             </div>
                         </div>
-                        <div class="lp-damage" id="opponent-damage-flash">0</div>
                     </div>
                 </div>
                 <div class="hud-deck-info">
-                    <div class="deck-counter">
+                    <button class="deck-counter" id="btn-opponent-deck">
                         <div class="deck-icon">🎴</div>
                         <div class="deck-label">DECK</div>
                         <div class="deck-value" id="opponent-deck-count">16</div>
-                    </div>
-                    <div class="deck-counter">
+                    </button>
+                    <button class="deck-counter" id="btn-opponent-gy">
                         <div class="deck-icon">⚰️</div>
                         <div class="deck-label">GY</div>
                         <div class="deck-value" id="opponent-gy-count">0</div>
-                    </div>
-                    <div class="deck-counter">
-                        <div class="deck-icon">✨</div>
-                        <div class="deck-label">EXTRA</div>
-                        <div class="deck-value" id="opponent-extra-count">0</div>
-                    </div>
+                    </button>
                 </div>
             </div>
         </div>
@@ -172,6 +165,47 @@
         <div id="opponent-hand" class="hand-container opponent-hand">
             <div class="hand-frame">
                 <div class="hand-cards" id="opponent-hand-cards"></div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- PHASE INDICATOR (Top Center)               -->
+        <!-- ========================================= -->
+        <div id="phase-indicator" class="phase-container">
+            <div class="phase-frame">
+                <div class="phase-title">CURRENT PHASE</div>
+                <div class="phase-name" id="current-phase-name">STANDBY PHASE</div>
+                <div class="phase-track">
+                    <div class="phase-step" data-phase="draw">
+                        <div class="phase-dot"></div>
+                        <div class="phase-step-label">DRAW</div>
+                    </div>
+                    <div class="phase-connector"></div>
+                    <div class="phase-step" data-phase="standby">
+                        <div class="phase-dot"></div>
+                        <div class="phase-step-label">STANDBY</div>
+                    </div>
+                    <div class="phase-connector"></div>
+                    <div class="phase-step" data-phase="main1">
+                        <div class="phase-dot"></div>
+                        <div class="phase-step-label">MAIN 1</div>
+                    </div>
+                    <div class="phase-connector"></div>
+                    <div class="phase-step" data-phase="battle">
+                        <div class="phase-dot"></div>
+                        <div class="phase-step-label">BATTLE</div>
+                    </div>
+                    <div class="phase-connector"></div>
+                    <div class="phase-step" data-phase="end">
+                        <div class="phase-dot"></div>
+                        <div class="phase-step-label">END</div>
+                    </div>
+                </div>
+                <div class="turn-info">
+                    <span class="turn-label">TURN</span>
+                    <span class="turn-number" id="turn-counter">1</span>
+                    <span class="turn-owner" id="turn-owner">YOUR TURN</span>
+                </div>
             </div>
         </div>
 
@@ -190,71 +224,91 @@
             <div class="arena-field">
                 <!-- OPPONENT FIELD -->
                 <div class="field-side opponent-field" data-owner="opponent">
-                    <div class="field-row">
-                        <!-- Field Spell Zone -->
-                        <div class="zone field-spell-zone" data-zone-type="field" data-owner="opponent" id="opponent-field-zone">
-                            <div class="zone-placeholder">
-                                <div class="zone-icon">🌍</div>
-                                <div class="zone-label">FIELD</div>
-                            </div>
-                        </div>
-                        <!-- Spell/Trap Zones Opponent -->
-                        <div class="spelltrap-row opponent-st-row">
-                            <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="opponent" data-index="0" id="opponent-st-0">
+                    <div class="field-layout">
+                        <!-- Left Column -->
+                        <div class="field-column left-column">
+                            <div class="zone field-spell-zone" data-zone-type="field" data-owner="opponent" id="opponent-field-zone">
                                 <div class="zone-placeholder">
-                                    <div class="zone-icon">🪄</div>
-                                    <div class="zone-label">S/T</div>
+                                    <div class="zone-icon">🌍</div>
+                                    <div class="zone-label">FIELD</div>
                                 </div>
                             </div>
-                            <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="opponent" data-index="1" id="opponent-st-1">
+                            <div class="zone extra-deck-zone" data-zone-type="extra" data-owner="opponent" id="opponent-extra-zone">
                                 <div class="zone-placeholder">
-                                    <div class="zone-icon">🪄</div>
-                                    <div class="zone-label">S/T</div>
+                                    <div class="zone-icon">✨</div>
+                                    <div class="zone-label">EXTRA</div>
+                                </div>
+                                <div class="zone-counter" id="opponent-extra-counter">0</div>
+                            </div>
+                        </div>
+
+                        <!-- Center Column -->
+                        <div class="field-column center-column">
+                            <!-- Monster Row -->
+                            <div class="field-row monster-row">
+                                <div class="zone monster-zone" data-zone-type="monster" data-owner="opponent" data-index="0" id="opponent-monster-0">
+                                    <div class="zone-placeholder">
+                                        <div class="zone-icon">👾</div>
+                                        <div class="zone-label">MONSTER</div>
+                                    </div>
+                                </div>
+                                <div class="zone monster-zone" data-zone-type="monster" data-owner="opponent" data-index="1" id="opponent-monster-1">
+                                    <div class="zone-placeholder">
+                                        <div class="zone-icon">👾</div>
+                                        <div class="zone-label">MONSTER</div>
+                                    </div>
+                                </div>
+                                <div class="zone monster-zone" data-zone-type="monster" data-owner="opponent" data-index="2" id="opponent-monster-2">
+                                    <div class="zone-placeholder">
+                                        <div class="zone-icon">👾</div>
+                                        <div class="zone-label">MONSTER</div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="opponent" data-index="2" id="opponent-st-2">
-                                <div class="zone-placeholder">
-                                    <div class="zone-icon">🪄</div>
-                                    <div class="zone-label">S/T</div>
+                            <!-- Spell/Trap Row -->
+                            <div class="field-row spelltrap-row">
+                                <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="opponent" data-index="0" id="opponent-st-0">
+                                    <div class="zone-placeholder">
+                                        <div class="zone-icon">🪄</div>
+                                        <div class="zone-label">S/T</div>
+                                    </div>
+                                </div>
+                                <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="opponent" data-index="1" id="opponent-st-1">
+                                    <div class="zone-placeholder">
+                                        <div class="zone-icon">🪄</div>
+                                        <div class="zone-label">S/T</div>
+                                    </div>
+                                </div>
+                                <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="opponent" data-index="2" id="opponent-st-2">
+                                    <div class="zone-placeholder">
+                                        <div class="zone-icon">🪄</div>
+                                        <div class="zone-label">S/T</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Extra Deck Zone -->
-                        <div class="zone extra-deck-zone" data-zone-type="extra" data-owner="opponent" id="opponent-extra-zone">
-                            <div class="zone-placeholder">
-                                <div class="zone-icon">✨</div>
-                                <div class="zone-label">EXTRA</div>
-                            </div>
-                            <div class="zone-counter" id="opponent-extra-counter">0</div>
-                        </div>
-                    </div>
-                    <div class="field-row">
-                        <!-- Monster Zones Opponent -->
-                        <div class="zone monster-zone" data-zone-type="monster" data-owner="opponent" data-index="0" id="opponent-monster-0">
-                            <div class="zone-placeholder">
-                                <div class="zone-icon">👾</div>
-                                <div class="zone-label">MONSTER</div>
-                            </div>
-                        </div>
-                        <div class="zone monster-zone" data-zone-type="monster" data-owner="opponent" data-index="1" id="opponent-monster-1">
-                            <div class="zone-placeholder">
-                                <div class="zone-icon">👾</div>
-                                <div class="zone-label">MONSTER</div>
-                            </div>
-                        </div>
-                        <div class="zone monster-zone" data-zone-type="monster" data-owner="opponent" data-index="2" id="opponent-monster-2">
-                            <div class="zone-placeholder">
-                                <div class="zone-icon">👾</div>
-                                <div class="zone-label">MONSTER</div>
-                            </div>
-                        </div>
-                        <!-- Graveyard Opponent -->
-                        <div class="zone graveyard-zone" data-zone-type="graveyard" data-owner="opponent" id="opponent-graveyard">
-                            <div class="zone-placeholder">
-                                <div class="zone-icon">⚰️</div>
-                                <div class="zone-label">GY</div>
-                            </div>
-                            <div class="zone-counter" id="opponent-gy-counter">0</div>
+
+                        <!-- Right Column -->
+                        <div class="field-column right-column">
+                            <button class="zone graveyard-zone" data-zone-type="graveyard" data-owner="opponent" id="btn-opponent-graveyard">
+                                <div class="zone-placeholder">
+                                    <div class="zone-icon">⚰️</div>
+                                    <div class="zone-label">GY</div>
+                                </div>
+                                <div class="zone-counter" id="opponent-gy-counter">0</div>
+                            </button>
+                            <button class="zone deck-zone" data-zone-type="deck" data-owner="opponent" id="btn-opponent-deck-field">
+                                <div class="zone-placeholder">
+                                    <div class="zone-icon">🎴</div>
+                                    <div class="zone-label">DECK</div>
+                                </div>
+                                <div class="deck-stack-visual">
+                                    <div class="deck-card-layer"></div>
+                                    <div class="deck-card-layer"></div>
+                                    <div class="deck-card-layer"></div>
+                                    <img src="https://images.ygoprodeck.com/images/cards/back_high.jpg" alt="Deck" class="deck-top-card">
+                                </div>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -270,101 +324,94 @@
 
                 <!-- PLAYER FIELD (YAMI YUGI) -->
                 <div class="field-side player-field" data-owner="player">
-                    <div class="field-row">
-                        <!-- Monster Zones Player -->
-                        <div class="zone monster-zone" data-zone-type="monster" data-owner="player" data-index="0" id="player-monster-0">
-                            <div class="zone-placeholder">
-                                <div class="zone-icon">👾</div>
-                                <div class="zone-label">MONSTER</div>
-                            </div>
-                        </div>
-                        <div class="zone monster-zone" data-zone-type="monster" data-owner="player" data-index="1" id="player-monster-1">
-                            <div class="zone-placeholder">
-                                <div class="zone-icon">👾</div>
-                                <div class="zone-label">MONSTER</div>
-                            </div>
-                        </div>
-                        <div class="zone monster-zone" data-zone-type="monster" data-owner="player" data-index="2" id="player-monster-2">
-                            <div class="zone-placeholder">
-                                <div class="zone-icon">👾</div>
-                                <div class="zone-label">MONSTER</div>
-                            </div>
-                        </div>
-                        <!-- Graveyard Player -->
-                        <div class="zone graveyard-zone" data-zone-type="graveyard" data-owner="player" id="player-graveyard">
-                            <div class="zone-placeholder">
-                                <div class="zone-icon">⚰️</div>
-                                <div class="zone-label">GY</div>
-                            </div>
-                            <div class="zone-counter" id="player-gy-counter">0</div>
-                        </div>
-                    </div>
-                    <div class="field-row">
-                        <!-- Field Spell Zone Player -->
-                        <div class="zone field-spell-zone" data-zone-type="field" data-owner="player" id="player-field-zone">
-                            <div class="zone-placeholder">
-                                <div class="zone-icon">🌍</div>
-                                <div class="zone-label">FIELD</div>
-                            </div>
-                        </div>
-                        <!-- Spell/Trap Zones Player -->
-                        <div class="spelltrap-row player-st-row">
-                            <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="player" data-index="0" id="player-st-0">
+                    <div class="field-layout">
+                        <!-- Left Column -->
+                        <div class="field-column left-column">
+                            <div class="zone field-spell-zone" data-zone-type="field" data-owner="player" id="player-field-zone">
                                 <div class="zone-placeholder">
-                                    <div class="zone-icon">🪄</div>
-                                    <div class="zone-label">S/T</div>
+                                    <div class="zone-icon">🌍</div>
+                                    <div class="zone-label">FIELD</div>
                                 </div>
                             </div>
-                            <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="player" data-index="1" id="player-st-1">
+                            <div class="zone extra-deck-zone" data-zone-type="extra" data-owner="player" id="player-extra-zone">
                                 <div class="zone-placeholder">
-                                    <div class="zone-icon">🪄</div>
-                                    <div class="zone-label">S/T</div>
+                                    <div class="zone-icon">✨</div>
+                                    <div class="zone-label">EXTRA</div>
                                 </div>
-                            </div>
-                            <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="player" data-index="2" id="player-st-2">
-                                <div class="zone-placeholder">
-                                    <div class="zone-icon">🪄</div>
-                                    <div class="zone-label">S/T</div>
-                                </div>
+                                <div class="zone-counter" id="player-extra-counter">0</div>
                             </div>
                         </div>
-                        <!-- Extra Deck Zone Player -->
-                        <div class="zone extra-deck-zone" data-zone-type="extra" data-owner="player" id="player-extra-zone">
-                            <div class="zone-placeholder">
-                                <div class="zone-icon">✨</div>
-                                <div class="zone-label">EXTRA</div>
-                            </div>
-                            <div class="zone-counter" id="player-extra-counter">0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Deck Piles (on the side) -->
-            <div class="deck-pile opponent-deck-pile" id="opponent-deck-pile">
-                <div class="deck-stack">
-                    <div class="deck-card deck-card-4"></div>
-                    <div class="deck-card deck-card-3"></div>
-                    <div class="deck-card deck-card-2"></div>
-                    <div class="deck-card deck-card-1"></div>
-                    <div class="deck-card deck-card-top">
-                        <img src="https://images.ygoprodeck.com/images/cards/back_high.jpg" alt="Deck Back" class="deck-back-image">
-                    </div>
-                </div>
-                <div class="deck-pile-label">OPPONENT'S DECK</div>
-            </div>
+                        <!-- Center Column -->
+                        <div class="field-column center-column">
+                            <!-- Spell/Trap Row -->
+                            <div class="field-row spelltrap-row">
+                                <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="player" data-index="0" id="player-st-0">
+                                    <div class="zone-placeholder">
+                                        <div class="zone-icon">🪄</div>
+                                        <div class="zone-label">S/T</div>
+                                    </div>
+                                </div>
+                                <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="player" data-index="1" id="player-st-1">
+                                    <div class="zone-placeholder">
+                                        <div class="zone-icon">🪄</div>
+                                        <div class="zone-label">S/T</div>
+                                    </div>
+                                </div>
+                                <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="player" data-index="2" id="player-st-2">
+                                    <div class="zone-placeholder">
+                                        <div class="zone-icon">🪄</div>
+                                        <div class="zone-label">S/T</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Monster Row -->
+                            <div class="field-row monster-row">
+                                <div class="zone monster-zone" data-zone-type="monster" data-owner="player" data-index="0" id="player-monster-0">
+                                    <div class="zone-placeholder">
+                                        <div class="zone-icon">👾</div>
+                                        <div class="zone-label">MONSTER</div>
+                                    </div>
+                                </div>
+                                <div class="zone monster-zone" data-zone-type="monster" data-owner="player" data-index="1" id="player-monster-1">
+                                    <div class="zone-placeholder">
+                                        <div class="zone-icon">👾</div>
+                                        <div class="zone-label">MONSTER</div>
+                                    </div>
+                                </div>
+                                <div class="zone monster-zone" data-zone-type="monster" data-owner="player" data-index="2" id="player-monster-2">
+                                    <div class="zone-placeholder">
+                                        <div class="zone-icon">👾</div>
+                                        <div class="zone-label">MONSTER</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="deck-pile player-deck-pile" id="player-deck-pile">
-                <div class="deck-stack">
-                    <div class="deck-card deck-card-4"></div>
-                    <div class="deck-card deck-card-3"></div>
-                    <div class="deck-card deck-card-2"></div>
-                    <div class="deck-card deck-card-1"></div>
-                    <div class="deck-card deck-card-top">
-                        <img src="https://images.ygoprodeck.com/images/cards/back_high.jpg" alt="Deck Back" class="deck-back-image">
+                        <!-- Right Column -->
+                        <div class="field-column right-column">
+                            <button class="zone graveyard-zone" data-zone-type="graveyard" data-owner="player" id="btn-player-graveyard">
+                                <div class="zone-placeholder">
+                                    <div class="zone-icon">⚰️</div>
+                                    <div class="zone-label">GY</div>
+                                </div>
+                                <div class="zone-counter" id="player-gy-counter">0</div>
+                            </button>
+                            <button class="zone deck-zone" data-zone-type="deck" data-owner="player" id="btn-player-deck-field">
+                                <div class="zone-placeholder">
+                                    <div class="zone-icon">🎴</div>
+                                    <div class="zone-label">DECK</div>
+                                </div>
+                                <div class="deck-stack-visual">
+                                    <div class="deck-card-layer"></div>
+                                    <div class="deck-card-layer"></div>
+                                    <div class="deck-card-layer"></div>
+                                    <img src="https://images.ygoprodeck.com/images/cards/back_high.jpg" alt="Deck" class="deck-top-card">
+                                </div>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="deck-pile-label">YOUR DECK</div>
             </div>
 
             <!-- Battle Effects Container -->
@@ -402,14 +449,12 @@
                                 <text x="50" y="55" text-anchor="middle" fill="#fbbf24" font-size="36" font-family="Orbitron" font-weight="900">Y</text>
                             </svg>
                         </div>
-                        <div class="portrait-name">YAMI YUGI</div>
-                        <div class="portrait-title">King of Games</div>
                     </div>
                 </div>
                 <div class="hud-info">
                     <div class="player-name">
                         <span class="name-text">YAMI YUGI</span>
-                        <span class="name-badge human">HUMAN</span>
+                        <span class="name-badge human">YOU</span>
                     </div>
                     <div class="lp-container player-lp">
                         <div class="lp-label">LIFE POINTS</div>
@@ -424,77 +469,25 @@
                                 <span class="digit" data-place="1">0</span>
                             </div>
                         </div>
-                        <div class="lp-damage" id="player-damage-flash">0</div>
                     </div>
                 </div>
                 <div class="hud-deck-info">
-                    <div class="deck-counter">
+                    <button class="deck-counter" id="btn-player-deck">
                         <div class="deck-icon">🎴</div>
                         <div class="deck-label">DECK</div>
                         <div class="deck-value" id="player-deck-count">16</div>
-                    </div>
-                    <div class="deck-counter">
+                    </button>
+                    <button class="deck-counter" id="btn-player-gy">
                         <div class="deck-icon">⚰️</div>
                         <div class="deck-label">GY</div>
                         <div class="deck-value" id="player-gy-count">0</div>
-                    </div>
-                    <div class="deck-counter">
-                        <div class="deck-icon">✨</div>
-                        <div class="deck-label">EXTRA</div>
-                        <div class="deck-value" id="player-extra-count">0</div>
-                    </div>
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- ========================================= -->
-        <!-- PHASE INDICATOR & TURN CONTROLS            -->
-        <!-- ========================================= -->
-        <div id="phase-indicator" class="phase-container">
-            <div class="phase-frame">
-                <div class="phase-title">CURRENT PHASE</div>
-                <div class="phase-name" id="current-phase-name">MAIN PHASE 1</div>
-                <div class="phase-track">
-                    <div class="phase-step active" data-phase="draw">
-                        <div class="phase-dot"></div>
-                        <div class="phase-step-label">DRAW</div>
-                    </div>
-                    <div class="phase-connector"></div>
-                    <div class="phase-step" data-phase="standby">
-                        <div class="phase-dot"></div>
-                        <div class="phase-step-label">STANDBY</div>
-                    </div>
-                    <div class="phase-connector"></div>
-                    <div class="phase-step" data-phase="main1">
-                        <div class="phase-dot"></div>
-                        <div class="phase-step-label">MAIN 1</div>
-                    </div>
-                    <div class="phase-connector"></div>
-                    <div class="phase-step" data-phase="battle">
-                        <div class="phase-dot"></div>
-                        <div class="phase-step-label">BATTLE</div>
-                    </div>
-                    <div class="phase-connector"></div>
-                    <div class="phase-step" data-phase="main2">
-                        <div class="phase-dot"></div>
-                        <div class="phase-step-label">MAIN 2</div>
-                    </div>
-                    <div class="phase-connector"></div>
-                    <div class="phase-step" data-phase="end">
-                        <div class="phase-dot"></div>
-                        <div class="phase-step-label">END</div>
-                    </div>
-                </div>
-                <div class="turn-info">
-                    <span class="turn-label">TURN</span>
-                    <span class="turn-number" id="turn-counter">1</span>
-                    <span class="turn-owner" id="turn-owner">YOUR TURN</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================================= -->
-        <!-- ACTION BUTTONS                             -->
+        <!-- ACTION BUTTONS (Right Side)                -->
         <!-- ========================================= -->
         <div id="action-panel" class="action-container">
             <button class="action-btn primary-btn" id="btn-next-phase">
@@ -509,23 +502,19 @@
                 <span class="btn-icon">❌</span>
                 <span class="btn-label">CANCEL</span>
             </button>
-            <button class="action-btn" id="btn-auto-duel">
-                <span class="btn-icon">🤖</span>
-                <span class="btn-label">AUTO DUEL</span>
-            </button>
-            <button class="action-btn" id="btn-surrender">
+            <button class="action-btn danger-btn" id="btn-surrender">
                 <span class="btn-icon">🏳️</span>
                 <span class="btn-label">SURRENDER</span>
             </button>
         </div>
 
         <!-- ========================================= -->
-        <!-- CARD INSPECTOR (SIDE PANEL)                -->
+        <!-- CARD INSPECTOR (Side Panel)                -->
         <!-- ========================================= -->
         <div id="card-inspector" class="inspector-container">
             <div class="inspector-frame">
                 <div class="inspector-header">
-                    <div class="inspector-title">CARD INSPECTOR</div>
+                    <div class="inspector-title">CARD INFO</div>
                     <button class="inspector-close" id="inspector-close">✕</button>
                 </div>
                 <div class="inspector-content">
@@ -606,15 +595,11 @@
                         <span class="item-icon">↕️</span>
                         <span class="item-label">Change Position</span>
                     </li>
+                    <li class="context-menu-item" data-action="view-card">
+                        <span class="item-icon">👁️</span>
+                        <span class="item-label">View Card</span>
+                    </li>
                     <li class="context-menu-item divider"></li>
-                    <li class="context-menu-item" data-action="tribute">
-                        <span class="item-icon">⬆️</span>
-                        <span class="item-label">Tribute Summon</span>
-                    </li>
-                    <li class="context-menu-item" data-action="send-gy">
-                        <span class="item-icon">⚰️</span>
-                        <span class="item-label">Send to Graveyard</span>
-                    </li>
                     <li class="context-menu-item danger" data-action="cancel">
                         <span class="item-icon">❌</span>
                         <span class="item-label">Cancel</span>
@@ -632,18 +617,7 @@
                 <div class="prompt-text" id="selector-text">Choose a card to target for this action.</div>
             </div>
             <div class="selector-actions">
-                <button class="selector-btn confirm" id="selector-confirm">CONFIRM</button>
                 <button class="selector-btn cancel" id="selector-cancel">CANCEL</button>
-            </div>
-        </div>
-
-        <!-- ========================================= -->
-        <!-- CHAIN / ACTIVATION DISPLAY                 -->
-        <!-- ========================================= -->
-        <div id="chain-display" class="chain-container hidden">
-            <div class="chain-frame">
-                <div class="chain-title">CHAIN</div>
-                <div class="chain-links" id="chain-links"></div>
             </div>
         </div>
 
@@ -667,12 +641,12 @@
 
         <!-- ========================================= -->
         <!-- FLOATING BATTLE MESSAGES (Pop-ups)         -->
-        <!-- ========================================= -->
+        <!-- ============================================= -->
         <div id="battle-messages" class="messages-container"></div>
 
         <!-- ========================================= -->
         <!-- VICTORY / DEFEAT OVERLAY                   -->
-        <!-- ========================================= -->
+        <!-- ============================================= -->
         <div id="result-overlay" class="screen-overlay hidden">
             <div class="result-background">
                 <div class="result-particles"></div>
@@ -718,29 +692,10 @@
                     <button class="modal-close" id="graveyard-close">✕</button>
                 </div>
                 <div class="modal-body">
-                    <div class="graveyard-grid" id="graveyard-grid">
-                        <!-- Cards inserted dynamically -->
-                    </div>
+                    <div class="graveyard-grid" id="graveyard-grid"></div>
                 </div>
                 <div class="modal-footer">
-                    <button class="modal-btn" id="graveyard-select-btn">SELECT CARD</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================================= -->
-        <!-- DECK VIEWER MODAL                          -->
-        <!-- ========================================= -->
-        <div id="deck-modal" class="modal-overlay hidden">
-            <div class="modal-frame deck-modal">
-                <div class="modal-header">
-                    <div class="modal-title">YOUR DECK</div>
-                    <button class="modal-close" id="deck-close">✕</button>
-                </div>
-                <div class="modal-body">
-                    <div class="deck-grid" id="deck-grid">
-                        <!-- Cards inserted dynamically -->
-                    </div>
+                    <button class="modal-btn" id="graveyard-close-btn">CLOSE</button>
                 </div>
             </div>
         </div>
@@ -776,19 +731,12 @@
                     <div class="settings-section">
                         <div class="settings-title">AUDIO</div>
                         <div class="setting-row">
-                            <label>Master Volume</label>
-                            <input type="range" id="master-volume" min="0" max="100" value="80">
-                            <span class="setting-value" id="master-volume-value">80</span>
+                            <label>SFX Enabled</label>
+                            <input type="checkbox" id="sfx-enabled" checked>
                         </div>
                         <div class="setting-row">
-                            <label>Music Volume</label>
-                            <input type="range" id="music-volume" min="0" max="100" value="60">
-                            <span class="setting-value" id="music-volume-value">60</span>
-                        </div>
-                        <div class="setting-row">
-                            <label>SFX Volume</label>
-                            <input type="range" id="sfx-volume" min="0" max="100" value="90">
-                            <span class="setting-value" id="sfx-volume-value">90</span>
+                            <label>Music Enabled</label>
+                            <input type="checkbox" id="music-enabled" checked>
                         </div>
                     </div>
                     <div class="settings-section">
@@ -801,10 +749,6 @@
                                 <option value="fast">Fast</option>
                                 <option value="instant">Instant</option>
                             </select>
-                        </div>
-                        <div class="setting-row">
-                            <label>Auto-Chain Resolution</label>
-                            <input type="checkbox" id="auto-chain" checked>
                         </div>
                         <div class="setting-row">
                             <label>Show Damage Numbers</label>
@@ -831,6 +775,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button class="modal-btn" id="settings-save">SAVE & CLOSE</button>
+                </div>
             </div>
         </div>
 
@@ -841,11 +788,11 @@
             <div class="tutorial-content">
                 <div class="tutorial-frame">
                     <div class="tutorial-header">
-                        <div class="tutorial-progress">Step <span id="tutorial-step">1</span> of <span id="tutorial-total">10</span></div>
+                        <div class="tutorial-progress">Step <span id="tutorial-step">1</span> of <span id="tutorial-total">8</span></div>
                         <div class="tutorial-title" id="tutorial-title">Welcome to Yu-Gi-Oh! HTML Edition</div>
                     </div>
                     <div class="tutorial-body">
-                        <div class="tutorial-image" id="tutorial-image"></div>
+                        <div class="tutorial-image" id="tutorial-image">🎴</div>
                         <div class="tutorial-text" id="tutorial-text">
                             This is a Speed Duel format. You start with 4000 LP and 4 cards in hand. Learn the basics before dueling Kaiba!
                         </div>
@@ -860,47 +807,13 @@
         </div>
 
         <!-- ========================================= -->
-        <!-- DECK BUILDER MODAL                         -->
-        <!-- ========================================= -->
-        <div id="deckbuilder-modal" class="modal-overlay hidden">
-            <div class="modal-frame deckbuilder-modal">
-                <div class="modal-header">
-                    <div class="modal-title">DECK BUILDER</div>
-                    <button class="modal-close" id="deckbuilder-close">✕</button>
-                </div>
-                <div class="modal-body">
-                    <div class="deckbuilder-layout">
-                        <div class="deckbuilder-library">
-                            <div class="library-header">
-                                <div class="library-title">CARD LIBRARY</div>
-                                <input type="text" class="library-search" id="library-search" placeholder="Search cards...">
-                            </div>
-                            <div class="library-grid" id="library-grid"></div>
-                        </div>
-                        <div class="deckbuilder-current">
-                            <div class="current-header">
-                                <div class="current-title">YOUR DECK</div>
-                                <div class="current-count"><span id="deck-current-count">0</span>/20</div>
-                            </div>
-                            <div class="current-grid" id="deckbuilder-deck-grid"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="modal-btn" id="deckbuilder-save">SAVE DECK</button>
-                    <button class="modal-btn" id="deckbuilder-reset">RESET</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================================= -->
         <!-- NOTIFICATION TOASTS                        -->
-        <!-- ========================================= -->
+        <!-- ============================================= -->
         <div id="toast-container" class="toast-container"></div>
 
         <!-- ========================================= -->
         <!-- PHASE TRANSITION OVERLAY                   -->
-        <!-- ========================================= -->
+        <!-- ============================================= -->
         <div id="phase-transition" class="phase-transition-overlay hidden">
             <div class="phase-transition-content">
                 <div class="phase-transition-text" id="phase-transition-text">DRAW PHASE</div>
@@ -909,12 +822,12 @@
 
         <!-- ========================================= -->
         <!-- DAMAGE NUMBER FLOATERS                     -->
-        <!-- ========================================= -->
+        <!-- ============================================= -->
         <div id="damage-floaters" class="floaters-container"></div>
 
         <!-- ========================================= -->
         <!-- ATTACK ARROW / TARGETING LINE              -->
-        <!-- ========================================= -->
+        <!-- ============================================= -->
         <svg id="attack-svg" class="attack-svg-overlay">
             <defs>
                 <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
@@ -949,94 +862,6 @@
         <audio id="sfx-click" preload="auto"></audio>
         <audio id="sfx-hover" preload="auto"></audio>
         <audio id="bg-music" loop preload="auto"></audio>
-    </div>
-
-    <!-- ============================================= -->
-    <!-- HIDDEN DATA / STATE HOLDER                     -->
-    <!-- ============================================= -->
-    <div id="game-state-holder" class="hidden" aria-hidden="true">
-        <div id="state-player-lp" data-value="4000"></div>
-        <div id="state-opponent-lp" data-value="4000"></div>
-        <div id="state-turn-number" data-value="1"></div>
-        <div id="state-current-phase" data-value="standby"></div>
-        <div id="state-turn-owner" data-value="player"></div>
-        <div id="state-normal-summon-used" data-value="false"></div>
-        <div id="state-battle-phase-entered" data-value="false"></div>
-    </div>
-
-    <!-- ============================================= -->
-    <!-- DEVELOPER / DEBUG PANEL (Toggle with ` key)    -->
-    <!-- ============================================= -->
-    <div id="debug-panel" class="debug-container hidden">
-        <div class="debug-header">
-            <span class="debug-title">DEV CONSOLE v3.8</span>
-            <button class="debug-close" id="debug-close">✕</button>
-        </div>
-        <div class="debug-content">
-            <div class="debug-section">
-                <div class="debug-title">LP MANIPULATION</div>
-                <button class="debug-btn" data-debug="player-lp-1000">Player -1000 LP</button>
-                <button class="debug-btn" data-debug="opponent-lp-1000">Opponent -1000 LP</button>
-                <button class="debug-btn" data-debug="heal-all">Heal All LP</button>
-            </div>
-            <div class="debug-section">
-                <div class="debug-title">CARD MANIPULATION</div>
-                <button class="debug-btn" data-debug="draw-1">Draw 1</button>
-                <button class="debug-btn" data-debug="draw-5">Draw 5</button>
-                <button class="debug-btn" data-debug="add-dark-magician">Add Dark Magician</button>
-                <button class="debug-btn" data-debug="add-blue-eyes">Add Blue-Eyes</button>
-            </div>
-            <div class="debug-section">
-                <div class="debug-title">GAME STATE</div>
-                <button class="debug-btn" data-debug="skip-to-battle">Skip to Battle</button>
-                <button class="debug-btn" data-debug="end-turn">End Turn</button>
-                <button class="debug-btn" data-debug="reset-game">Reset Game</button>
-                <button class="debug-btn" data-debug="force-win">Force Win</button>
-            </div>
-            <div class="debug-section">
-                <div class="debug-title">LOG OUTPUT</div>
-                <div class="debug-log" id="debug-log"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================= -->
-    <!-- KEYBOARD SHORTCUTS TOOLTIP                     -->
-    <!-- ============================================= -->
-    <div id="shortcuts-tooltip" class="tooltip-container hidden">
-        <div class="tooltip-frame">
-            <div class="tooltip-title">KEYBOARD SHORTCUTS</div>
-            <div class="shortcut-list">
-                <div class="shortcut-row">
-                    <kbd>SPACE</kbd>
-                    <span>Next Phase / End Turn</span>
-                </div>
-                <div class="shortcut-row">
-                    <kbd>ESC</kbd>
-                    <span>Cancel Action</span>
-                </div>
-                <div class="shortcut-row">
-                    <kbd>D</kbd>
-                    <span>Draw Card (Debug)</span>
-                </div>
-                <div class="shortcut-row">
-                    <kbd>`</kbd>
-                    <span>Toggle Debug Panel</span>
-                </div>
-                <div class="shortcut-row">
-                    <kbd>G</kbd>
-                    <span>Open Graveyard</span>
-                </div>
-                <div class="shortcut-row">
-                    <kbd>M</kbd>
-                    <span>Toggle Music</span>
-                </div>
-                <div class="shortcut-row">
-                    <kbd>1-4</kbd>
-                    <span>Select Card in Hand</span>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- ============================================= -->
