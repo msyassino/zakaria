@@ -1,137 +1,1054 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>مبارزة الروابط ⚔ DUEL RUSH MAX</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Yu-Gi-Oh HTML Edition - A massive, fully functional web browser card game inspired by Duel Links. Speed Duel Format.">
+    <meta name="author" content="Qwen 3.8 Max">
+    <meta name="theme-color" content="#0a0f24">
+    <title>Yu-Gi-Oh! HTML Edition | Speed Duel Arena</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="https://images.ygoprodeck.com/images/cards/46986414.jpg">
+    
+    <link rel="preconnect" href="https://images.ygoprodeck.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Teko:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-<div id="bgEnergy"></div>
-<div id="rays"></div>
-<canvas id="fxC"></canvas>
-<div id="hurtV"></div>
-<div id="banner"></div>
-<div id="toast"></div>
+<body id="game-body" data-game-state="loading" data-turn="player" data-phase="standby">
 
-<!-- العنوان -->
-<div class="screen show" id="scrTitle">
-  <div class="titleCards" id="titleCards"></div>
-  <h1 class="logo">مبارزة الروابط</h1>
-  <div class="logo-sub">⚡ DUEL RUSH MAX — أقوى نسخة ⚡</div>
-  <div class="menu-btns">
-    <button class="btn big gold pulse" id="bToSelect">⚔ ابدأ المبارزة</button>
-    <div class="row2">
-      <button class="btn blue" id="bHelp">📜 القوانين</button>
-      <button class="btn dark" id="bColl">📖 البطاقات</button>
+    <!-- ============================================= -->
+    <!-- LOADING / SPLASH SCREEN                        -->
+    <!-- ============================================= -->
+    <div id="loading-screen" class="screen-overlay active">
+        <div class="loading-background">
+            <div class="loading-grid"></div>
+            <div class="loading-orb"></div>
+        </div>
+        <div class="loading-content">
+            <div class="logo-container">
+                <div class="logo-glow"></div>
+                <h1 class="game-logo">
+                    <span class="logo-yu">YU-GI-OH!</span>
+                    <span class="logo-edition">HTML EDITION</span>
+                </h1>
+                <div class="logo-subtitle">SPEED DUEL ARENA</div>
+            </div>
+            <div class="loading-bar-container">
+                <div class="loading-bar">
+                    <div class="loading-bar-progress" id="loading-progress"></div>
+                </div>
+                <div class="loading-text" id="loading-text">INITIALIZING DUEL DISK...</div>
+                <div class="loading-percent" id="loading-percent">0%</div>
+            </div>
+            <div class="loading-tips">
+                <p class="tip" data-tip="0">"It's time to D-D-D-D-D-D-D-D-DUEL!"</p>
+                <p class="tip hidden" data-tip="1">Monsters in Defense Position cannot attack.</p>
+                <p class="tip hidden" data-tip="2">Use Spell Cards to change the tide of battle.</p>
+                <p class="tip hidden" data-tip="3">Direct attacks deal damage when no monsters stand guard.</p>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="chips">
-    <span class="chip">🏆 انتصاراتك: <b id="winsC">0</b></span>
-    <span class="chip on" id="tSnd">🔊 الصوت</span>
-    <span class="chip" id="tFast">⏩ خصم سريع</span>
-  </div>
-</div>
 
-<!-- اختيار المبارز -->
-<div class="screen" id="scrSelect">
-  <h1 class="logo small">اختر مبارزك</h1>
-  <div class="charGrid" id="charGrid"></div>
-  <button class="btn dark small" id="bBackT">→ رجوع</button>
-</div>
-
-<!-- المبارزة -->
-<div class="screen" id="scrDuel">
-  <div id="arena">
-    <div class="duelbar" id="oBar">
-      <div class="ava" id="oAva">👺</div>
-      <div class="pinfo">
-        <div class="pname"><span id="oName">الخصم</span><span class="cnt">📚<b id="oDeck">0</b> ⚰<b id="oGy">0</b> ✋<b id="oHandN">0</b></span></div>
-        <div class="lpwrap"><div class="fill foe" id="oFill"></div><div class="lpnum" id="oLP">4000</div><div class="lpnotch"></div></div>
-      </div>
+    <!-- ============================================= -->
+    <!-- MAIN MENU SCREEN                               -->
+    <!-- ============================================= -->
+    <div id="main-menu" class="screen-overlay">
+        <div class="menu-background">
+            <div class="menu-particles"></div>
+            <div class="menu-cards-floating">
+                <div class="floating-card" style="--delay: 0s; --x: 10%; --y: 20%;"><img src="https://images.ygoprodeck.com/images/cards/46986414.jpg" alt="Dark Magician"></div>
+                <div class="floating-card" style="--delay: 2s; --x: 85%; --y: 30%;"><img src="https://images.ygoprodeck.com/images/cards/89631139.jpg" alt="Blue-Eyes"></div>
+                <div class="floating-card" style="--delay: 4s; --x: 20%; --y: 75%;"><img src="https://images.ygoprodeck.com/images/cards/91152256.jpg" alt="Celtic Guardian"></div>
+                <div class="floating-card" style="--delay: 6s; --x: 75%; --y: 70%;"><img src="https://images.ygoprodeck.com/images/cards/14898066.jpg" alt="Vorse Raider"></div>
+            </div>
+        </div>
+        <div class="menu-content">
+            <div class="menu-logo">
+                <h1 class="menu-title">YU-GI-OH!</h1>
+                <h2 class="menu-subtitle">HTML EDITION</h2>
+                <div class="menu-tagline">ENTER THE DUEL</div>
+            </div>
+            <div class="menu-buttons">
+                <button class="menu-btn primary" id="btn-start-duel">
+                    <span class="btn-icon">⚔️</span>
+                    <span class="btn-text">START DUEL</span>
+                    <span class="btn-glow"></span>
+                </button>
+                <button class="menu-btn secondary" id="btn-deck-builder">
+                    <span class="btn-icon">📚</span>
+                    <span class="btn-text">DECK BUILDER</span>
+                </button>
+                <button class="menu-btn secondary" id="btn-tutorial">
+                    <span class="btn-icon">📖</span>
+                    <span class="btn-text">TUTORIAL</span>
+                </button>
+                <button class="menu-btn secondary" id="btn-settings">
+                    <span class="btn-icon">⚙️</span>
+                    <span class="btn-text">SETTINGS</span>
+                </button>
+            </div>
+            <div class="menu-footer">
+                <div class="menu-version">v3.8.0 MAX</div>
+                <div class="menu-credits">Powered by Qwen 3.8 Max</div>
+            </div>
+        </div>
     </div>
-    <div class="srow" id="oSrow"></div>
-    <div class="mrow foe" id="oMrow"></div>
-    <div id="mid"><span id="turnLbl"></span><div id="msg"></div></div>
-    <div class="mrow mine" id="pMrow"></div>
-    <div class="srow" id="pSrow"></div>
-    <div class="duelbar" id="pBar">
-      <div class="ava" id="pAva">🌅</div>
-      <div class="pinfo">
-        <div class="pname"><span id="pName">أنت</span><span class="cnt">📚<b id="pDeck">0</b> ⚰<b id="pGy">0</b></span></div>
-        <div class="lpwrap"><div class="fill mine" id="pFill"></div><div class="lpnum" id="pLP">4000</div><div class="lpnotch"></div></div>
-      </div>
+
+    <!-- ============================================= -->
+    <!-- MAIN GAME CONTAINER                            -->
+    <!-- ============================================= -->
+    <div id="game-container" class="hidden">
+        
+        <!-- ========================================= -->
+        <!-- TOP HUD - OPPONENT (SETO KAIBA)            -->
+        <!-- ========================================= -->
+        <div id="opponent-hud" class="hud-container opponent">
+            <div class="hud-frame">
+                <div class="hud-portrait-frame">
+                    <div class="hud-portrait-glow"></div>
+                    <div class="hud-portrait" data-player="opponent">
+                        <div class="portrait-image">
+                            <svg viewBox="0 0 100 100" class="portrait-svg">
+                                <defs>
+                                    <linearGradient id="kaiba-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#1e3a8a"/>
+                                        <stop offset="100%" stop-color="#0c4a6e"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect width="100" height="100" fill="url(#kaiba-grad)"/>
+                                <text x="50" y="55" text-anchor="middle" fill="#00ffff" font-size="36" font-family="Orbitron" font-weight="900">K</text>
+                            </svg>
+                        </div>
+                        <div class="portrait-name">SETO KAIBA</div>
+                        <div class="portrait-title">CEO of KaibaCorp</div>
+                    </div>
+                </div>
+                <div class="hud-info">
+                    <div class="player-name">
+                        <span class="name-text">SETO KAIBA</span>
+                        <span class="name-badge">AI</span>
+                    </div>
+                    <div class="lp-container opponent-lp">
+                        <div class="lp-label">LIFE POINTS</div>
+                        <div class="lp-value-frame">
+                            <div class="lp-bar">
+                                <div class="lp-bar-fill" id="opponent-lp-bar" style="width: 100%;"></div>
+                            </div>
+                            <div class="lp-digits" id="opponent-lp-display">
+                                <span class="digit" data-place="1000">4</span>
+                                <span class="digit" data-place="100">0</span>
+                                <span class="digit" data-place="10">0</span>
+                                <span class="digit" data-place="1">0</span>
+                            </div>
+                        </div>
+                        <div class="lp-damage" id="opponent-damage-flash">0</div>
+                    </div>
+                </div>
+                <div class="hud-deck-info">
+                    <div class="deck-counter">
+                        <div class="deck-icon">🎴</div>
+                        <div class="deck-label">DECK</div>
+                        <div class="deck-value" id="opponent-deck-count">16</div>
+                    </div>
+                    <div class="deck-counter">
+                        <div class="deck-icon">⚰️</div>
+                        <div class="deck-label">GY</div>
+                        <div class="deck-value" id="opponent-gy-count">0</div>
+                    </div>
+                    <div class="deck-counter">
+                        <div class="deck-icon">✨</div>
+                        <div class="deck-label">EXTRA</div>
+                        <div class="deck-value" id="opponent-extra-count">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- OPPONENT HAND (FACE DOWN)                  -->
+        <!-- ========================================= -->
+        <div id="opponent-hand" class="hand-container opponent-hand">
+            <div class="hand-frame">
+                <div class="hand-cards" id="opponent-hand-cards"></div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- ARENA - DUEL FIELD (3D PERSPECTIVE)        -->
+        <!-- ========================================= -->
+        <div id="arena" class="arena-container">
+            <div class="arena-background">
+                <div class="bg-grid"></div>
+                <div class="bg-glow bg-glow-1"></div>
+                <div class="bg-glow bg-glow-2"></div>
+                <div class="bg-glow bg-glow-3"></div>
+                <div class="bg-circuit-lines"></div>
+            </div>
+
+            <div class="arena-field">
+                <!-- OPPONENT FIELD -->
+                <div class="field-side opponent-field" data-owner="opponent">
+                    <div class="field-row">
+                        <!-- Field Spell Zone -->
+                        <div class="zone field-spell-zone" data-zone-type="field" data-owner="opponent" id="opponent-field-zone">
+                            <div class="zone-placeholder">
+                                <div class="zone-icon">🌍</div>
+                                <div class="zone-label">FIELD</div>
+                            </div>
+                        </div>
+                        <!-- Spell/Trap Zones Opponent -->
+                        <div class="spelltrap-row opponent-st-row">
+                            <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="opponent" data-index="0" id="opponent-st-0">
+                                <div class="zone-placeholder">
+                                    <div class="zone-icon">🪄</div>
+                                    <div class="zone-label">S/T</div>
+                                </div>
+                            </div>
+                            <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="opponent" data-index="1" id="opponent-st-1">
+                                <div class="zone-placeholder">
+                                    <div class="zone-icon">🪄</div>
+                                    <div class="zone-label">S/T</div>
+                                </div>
+                            </div>
+                            <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="opponent" data-index="2" id="opponent-st-2">
+                                <div class="zone-placeholder">
+                                    <div class="zone-icon">🪄</div>
+                                    <div class="zone-label">S/T</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Extra Deck Zone -->
+                        <div class="zone extra-deck-zone" data-zone-type="extra" data-owner="opponent" id="opponent-extra-zone">
+                            <div class="zone-placeholder">
+                                <div class="zone-icon">✨</div>
+                                <div class="zone-label">EXTRA</div>
+                            </div>
+                            <div class="zone-counter" id="opponent-extra-counter">0</div>
+                        </div>
+                    </div>
+                    <div class="field-row">
+                        <!-- Monster Zones Opponent -->
+                        <div class="zone monster-zone" data-zone-type="monster" data-owner="opponent" data-index="0" id="opponent-monster-0">
+                            <div class="zone-placeholder">
+                                <div class="zone-icon">👾</div>
+                                <div class="zone-label">MONSTER</div>
+                            </div>
+                        </div>
+                        <div class="zone monster-zone" data-zone-type="monster" data-owner="opponent" data-index="1" id="opponent-monster-1">
+                            <div class="zone-placeholder">
+                                <div class="zone-icon">👾</div>
+                                <div class="zone-label">MONSTER</div>
+                            </div>
+                        </div>
+                        <div class="zone monster-zone" data-zone-type="monster" data-owner="opponent" data-index="2" id="opponent-monster-2">
+                            <div class="zone-placeholder">
+                                <div class="zone-icon">👾</div>
+                                <div class="zone-label">MONSTER</div>
+                            </div>
+                        </div>
+                        <!-- Graveyard Opponent -->
+                        <div class="zone graveyard-zone" data-zone-type="graveyard" data-owner="opponent" id="opponent-graveyard">
+                            <div class="zone-placeholder">
+                                <div class="zone-icon">⚰️</div>
+                                <div class="zone-label">GY</div>
+                            </div>
+                            <div class="zone-counter" id="opponent-gy-counter">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CENTER DIVIDER -->
+                <div class="field-divider">
+                    <div class="divider-line"></div>
+                    <div class="divider-logo">
+                        <span class="duel-logo">DUEL</span>
+                    </div>
+                    <div class="divider-line"></div>
+                </div>
+
+                <!-- PLAYER FIELD (YAMI YUGI) -->
+                <div class="field-side player-field" data-owner="player">
+                    <div class="field-row">
+                        <!-- Monster Zones Player -->
+                        <div class="zone monster-zone" data-zone-type="monster" data-owner="player" data-index="0" id="player-monster-0">
+                            <div class="zone-placeholder">
+                                <div class="zone-icon">👾</div>
+                                <div class="zone-label">MONSTER</div>
+                            </div>
+                        </div>
+                        <div class="zone monster-zone" data-zone-type="monster" data-owner="player" data-index="1" id="player-monster-1">
+                            <div class="zone-placeholder">
+                                <div class="zone-icon">👾</div>
+                                <div class="zone-label">MONSTER</div>
+                            </div>
+                        </div>
+                        <div class="zone monster-zone" data-zone-type="monster" data-owner="player" data-index="2" id="player-monster-2">
+                            <div class="zone-placeholder">
+                                <div class="zone-icon">👾</div>
+                                <div class="zone-label">MONSTER</div>
+                            </div>
+                        </div>
+                        <!-- Graveyard Player -->
+                        <div class="zone graveyard-zone" data-zone-type="graveyard" data-owner="player" id="player-graveyard">
+                            <div class="zone-placeholder">
+                                <div class="zone-icon">⚰️</div>
+                                <div class="zone-label">GY</div>
+                            </div>
+                            <div class="zone-counter" id="player-gy-counter">0</div>
+                        </div>
+                    </div>
+                    <div class="field-row">
+                        <!-- Field Spell Zone Player -->
+                        <div class="zone field-spell-zone" data-zone-type="field" data-owner="player" id="player-field-zone">
+                            <div class="zone-placeholder">
+                                <div class="zone-icon">🌍</div>
+                                <div class="zone-label">FIELD</div>
+                            </div>
+                        </div>
+                        <!-- Spell/Trap Zones Player -->
+                        <div class="spelltrap-row player-st-row">
+                            <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="player" data-index="0" id="player-st-0">
+                                <div class="zone-placeholder">
+                                    <div class="zone-icon">🪄</div>
+                                    <div class="zone-label">S/T</div>
+                                </div>
+                            </div>
+                            <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="player" data-index="1" id="player-st-1">
+                                <div class="zone-placeholder">
+                                    <div class="zone-icon">🪄</div>
+                                    <div class="zone-label">S/T</div>
+                                </div>
+                            </div>
+                            <div class="zone spelltrap-zone" data-zone-type="spelltrap" data-owner="player" data-index="2" id="player-st-2">
+                                <div class="zone-placeholder">
+                                    <div class="zone-icon">🪄</div>
+                                    <div class="zone-label">S/T</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Extra Deck Zone Player -->
+                        <div class="zone extra-deck-zone" data-zone-type="extra" data-owner="player" id="player-extra-zone">
+                            <div class="zone-placeholder">
+                                <div class="zone-icon">✨</div>
+                                <div class="zone-label">EXTRA</div>
+                            </div>
+                            <div class="zone-counter" id="player-extra-counter">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deck Piles (on the side) -->
+            <div class="deck-pile opponent-deck-pile" id="opponent-deck-pile">
+                <div class="deck-stack">
+                    <div class="deck-card deck-card-4"></div>
+                    <div class="deck-card deck-card-3"></div>
+                    <div class="deck-card deck-card-2"></div>
+                    <div class="deck-card deck-card-1"></div>
+                    <div class="deck-card deck-card-top">
+                        <img src="https://images.ygoprodeck.com/images/cards/back_high.jpg" alt="Deck Back" class="deck-back-image">
+                    </div>
+                </div>
+                <div class="deck-pile-label">OPPONENT'S DECK</div>
+            </div>
+
+            <div class="deck-pile player-deck-pile" id="player-deck-pile">
+                <div class="deck-stack">
+                    <div class="deck-card deck-card-4"></div>
+                    <div class="deck-card deck-card-3"></div>
+                    <div class="deck-card deck-card-2"></div>
+                    <div class="deck-card deck-card-1"></div>
+                    <div class="deck-card deck-card-top">
+                        <img src="https://images.ygoprodeck.com/images/cards/back_high.jpg" alt="Deck Back" class="deck-back-image">
+                    </div>
+                </div>
+                <div class="deck-pile-label">YOUR DECK</div>
+            </div>
+
+            <!-- Battle Effects Container -->
+            <div id="battle-effects-container" class="effects-container"></div>
+            <div id="particle-effects-container" class="effects-container"></div>
+            <div id="summon-effects-container" class="effects-container"></div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- PLAYER HAND (FACE UP, INTERACTIVE)         -->
+        <!-- ========================================= -->
+        <div id="player-hand" class="hand-container player-hand">
+            <div class="hand-frame">
+                <div class="hand-cards" id="player-hand-cards"></div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- BOTTOM HUD - PLAYER (YAMI YUGI)            -->
+        <!-- ========================================= -->
+        <div id="player-hud" class="hud-container player">
+            <div class="hud-frame">
+                <div class="hud-portrait-frame">
+                    <div class="hud-portrait-glow"></div>
+                    <div class="hud-portrait" data-player="player">
+                        <div class="portrait-image">
+                            <svg viewBox="0 0 100 100" class="portrait-svg">
+                                <defs>
+                                    <linearGradient id="yugi-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#7c2d12"/>
+                                        <stop offset="100%" stop-color="#7e22ce"/>
+                                    </linearGradient>
+                                </defs>
+                                <rect width="100" height="100" fill="url(#yugi-grad)"/>
+                                <text x="50" y="55" text-anchor="middle" fill="#fbbf24" font-size="36" font-family="Orbitron" font-weight="900">Y</text>
+                            </svg>
+                        </div>
+                        <div class="portrait-name">YAMI YUGI</div>
+                        <div class="portrait-title">King of Games</div>
+                    </div>
+                </div>
+                <div class="hud-info">
+                    <div class="player-name">
+                        <span class="name-text">YAMI YUGI</span>
+                        <span class="name-badge human">HUMAN</span>
+                    </div>
+                    <div class="lp-container player-lp">
+                        <div class="lp-label">LIFE POINTS</div>
+                        <div class="lp-value-frame">
+                            <div class="lp-bar">
+                                <div class="lp-bar-fill" id="player-lp-bar" style="width: 100%;"></div>
+                            </div>
+                            <div class="lp-digits" id="player-lp-display">
+                                <span class="digit" data-place="1000">4</span>
+                                <span class="digit" data-place="100">0</span>
+                                <span class="digit" data-place="10">0</span>
+                                <span class="digit" data-place="1">0</span>
+                            </div>
+                        </div>
+                        <div class="lp-damage" id="player-damage-flash">0</div>
+                    </div>
+                </div>
+                <div class="hud-deck-info">
+                    <div class="deck-counter">
+                        <div class="deck-icon">🎴</div>
+                        <div class="deck-label">DECK</div>
+                        <div class="deck-value" id="player-deck-count">16</div>
+                    </div>
+                    <div class="deck-counter">
+                        <div class="deck-icon">⚰️</div>
+                        <div class="deck-label">GY</div>
+                        <div class="deck-value" id="player-gy-count">0</div>
+                    </div>
+                    <div class="deck-counter">
+                        <div class="deck-icon">✨</div>
+                        <div class="deck-label">EXTRA</div>
+                        <div class="deck-value" id="player-extra-count">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- PHASE INDICATOR & TURN CONTROLS            -->
+        <!-- ========================================= -->
+        <div id="phase-indicator" class="phase-container">
+            <div class="phase-frame">
+                <div class="phase-title">CURRENT PHASE</div>
+                <div class="phase-name" id="current-phase-name">MAIN PHASE 1</div>
+                <div class="phase-track">
+                    <div class="phase-step active" data-phase="draw">
+                        <div class="phase-dot"></div>
+                        <div class="phase-step-label">DRAW</div>
+                    </div>
+                    <div class="phase-connector"></div>
+                    <div class="phase-step" data-phase="standby">
+                        <div class="phase-dot"></div>
+                        <div class="phase-step-label">STANDBY</div>
+                    </div>
+                    <div class="phase-connector"></div>
+                    <div class="phase-step" data-phase="main1">
+                        <div class="phase-dot"></div>
+                        <div class="phase-step-label">MAIN 1</div>
+                    </div>
+                    <div class="phase-connector"></div>
+                    <div class="phase-step" data-phase="battle">
+                        <div class="phase-dot"></div>
+                        <div class="phase-step-label">BATTLE</div>
+                    </div>
+                    <div class="phase-connector"></div>
+                    <div class="phase-step" data-phase="main2">
+                        <div class="phase-dot"></div>
+                        <div class="phase-step-label">MAIN 2</div>
+                    </div>
+                    <div class="phase-connector"></div>
+                    <div class="phase-step" data-phase="end">
+                        <div class="phase-dot"></div>
+                        <div class="phase-step-label">END</div>
+                    </div>
+                </div>
+                <div class="turn-info">
+                    <span class="turn-label">TURN</span>
+                    <span class="turn-number" id="turn-counter">1</span>
+                    <span class="turn-owner" id="turn-owner">YOUR TURN</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- ACTION BUTTONS                             -->
+        <!-- ========================================= -->
+        <div id="action-panel" class="action-container">
+            <button class="action-btn primary-btn" id="btn-next-phase">
+                <span class="btn-icon">➡️</span>
+                <span class="btn-label">NEXT PHASE</span>
+            </button>
+            <button class="action-btn" id="btn-end-turn">
+                <span class="btn-icon">⏭️</span>
+                <span class="btn-label">END TURN</span>
+            </button>
+            <button class="action-btn" id="btn-cancel">
+                <span class="btn-icon">❌</span>
+                <span class="btn-label">CANCEL</span>
+            </button>
+            <button class="action-btn" id="btn-auto-duel">
+                <span class="btn-icon">🤖</span>
+                <span class="btn-label">AUTO DUEL</span>
+            </button>
+            <button class="action-btn" id="btn-surrender">
+                <span class="btn-icon">🏳️</span>
+                <span class="btn-label">SURRENDER</span>
+            </button>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- CARD INSPECTOR (SIDE PANEL)                -->
+        <!-- ========================================= -->
+        <div id="card-inspector" class="inspector-container">
+            <div class="inspector-frame">
+                <div class="inspector-header">
+                    <div class="inspector-title">CARD INSPECTOR</div>
+                    <button class="inspector-close" id="inspector-close">✕</button>
+                </div>
+                <div class="inspector-content">
+                    <div class="inspector-art-frame">
+                        <div class="inspector-art-container">
+                            <img id="inspector-art" src="https://images.ygoprodeck.com/images/cards/back_high.jpg" alt="Card Art" class="inspector-art-image">
+                            <div class="inspector-art-overlay"></div>
+                        </div>
+                    </div>
+                    <div class="inspector-details">
+                        <div class="inspector-name" id="inspector-name">Hover over a card</div>
+                        <div class="inspector-type-frame">
+                            <div class="inspector-type" id="inspector-type">-</div>
+                            <div class="inspector-attribute" id="inspector-attribute">-</div>
+                            <div class="inspector-level" id="inspector-level">-</div>
+                        </div>
+                        <div class="inspector-divider"></div>
+                        <div class="inspector-description" id="inspector-description">
+                            Card information will be displayed here when you hover over a card in your hand or on the field.
+                        </div>
+                        <div class="inspector-stats" id="inspector-stats">
+                            <div class="stat-row">
+                                <span class="stat-label">ATK</span>
+                                <span class="stat-value" id="inspector-atk">/</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">DEF</span>
+                                <span class="stat-value" id="inspector-def">/</span>
+                            </div>
+                        </div>
+                        <div class="inspector-meta">
+                            <div class="meta-row">
+                                <span class="meta-label">CARD ID</span>
+                                <span class="meta-value" id="inspector-id">-</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-label">TYPE</span>
+                                <span class="meta-value" id="inspector-category">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- CONTEXT MENU (Right-Click / Long-Press)    -->
+        <!-- ========================================= -->
+        <div id="context-menu" class="context-menu-container hidden">
+            <div class="context-menu-frame">
+                <div class="context-menu-header">ACTIONS</div>
+                <ul class="context-menu-list">
+                    <li class="context-menu-item" data-action="summon-atk">
+                        <span class="item-icon">⚔️</span>
+                        <span class="item-label">Summon in Attack Mode</span>
+                    </li>
+                    <li class="context-menu-item" data-action="summon-def">
+                        <span class="item-icon">🛡️</span>
+                        <span class="item-label">Set in Defense Mode</span>
+                    </li>
+                    <li class="context-menu-item" data-action="set-spell">
+                        <span class="item-icon">🪄</span>
+                        <span class="item-label">Set Spell/Trap</span>
+                    </li>
+                    <li class="context-menu-item" data-action="activate">
+                        <span class="item-icon">✨</span>
+                        <span class="item-label">Activate Card</span>
+                    </li>
+                    <li class="context-menu-item" data-action="attack">
+                        <span class="item-icon">💥</span>
+                        <span class="item-label">Attack</span>
+                    </li>
+                    <li class="context-menu-item" data-action="flip">
+                        <span class="item-icon">🔄</span>
+                        <span class="item-label">Flip Summon</span>
+                    </li>
+                    <li class="context-menu-item" data-action="change-pos">
+                        <span class="item-icon">↕️</span>
+                        <span class="item-label">Change Position</span>
+                    </li>
+                    <li class="context-menu-item divider"></li>
+                    <li class="context-menu-item" data-action="tribute">
+                        <span class="item-icon">⬆️</span>
+                        <span class="item-label">Tribute Summon</span>
+                    </li>
+                    <li class="context-menu-item" data-action="send-gy">
+                        <span class="item-icon">⚰️</span>
+                        <span class="item-label">Send to Graveyard</span>
+                    </li>
+                    <li class="context-menu-item danger" data-action="cancel">
+                        <span class="item-icon">❌</span>
+                        <span class="item-label">Cancel</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- TARGET SELECTION OVERLAY                  -->
+        <!-- ========================================= -->
+        <div id="target-selector" class="selector-overlay hidden">
+            <div class="selector-prompt">
+                <div class="prompt-title" id="selector-title">SELECT A TARGET</div>
+                <div class="prompt-text" id="selector-text">Choose a card to target for this action.</div>
+            </div>
+            <div class="selector-actions">
+                <button class="selector-btn confirm" id="selector-confirm">CONFIRM</button>
+                <button class="selector-btn cancel" id="selector-cancel">CANCEL</button>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- CHAIN / ACTIVATION DISPLAY                 -->
+        <!-- ========================================= -->
+        <div id="chain-display" class="chain-container hidden">
+            <div class="chain-frame">
+                <div class="chain-title">CHAIN</div>
+                <div class="chain-links" id="chain-links"></div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- BATTLE LOG / EVENT LOG                     -->
+        <!-- ========================================= -->
+        <div id="battle-log" class="log-container">
+            <div class="log-frame">
+                <div class="log-header">
+                    <div class="log-title">DUEL LOG</div>
+                    <button class="log-toggle" id="log-toggle">▼</button>
+                </div>
+                <div class="log-content" id="log-content">
+                    <div class="log-entry system">
+                        <span class="log-time">00:00</span>
+                        <span class="log-message">Duel Disk Initialized. Awaiting duel start...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- FLOATING BATTLE MESSAGES (Pop-ups)         -->
+        <!-- ========================================= -->
+        <div id="battle-messages" class="messages-container"></div>
+
+        <!-- ========================================= -->
+        <!-- VICTORY / DEFEAT OVERLAY                   -->
+        <!-- ========================================= -->
+        <div id="result-overlay" class="screen-overlay hidden">
+            <div class="result-background">
+                <div class="result-particles"></div>
+            </div>
+            <div class="result-content">
+                <div class="result-title" id="result-title">VICTORY!</div>
+                <div class="result-subtitle" id="result-subtitle">You have defeated Seto Kaiba!</div>
+                <div class="result-stats">
+                    <div class="result-stat">
+                        <div class="stat-label">DAMAGE DEALT</div>
+                        <div class="stat-value" id="result-damage">0</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="stat-label">CARDS PLAYED</div>
+                        <div class="stat-value" id="result-cards">0</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="stat-label">TURNS TAKEN</div>
+                        <div class="stat-value" id="result-turns">0</div>
+                    </div>
+                </div>
+                <div class="result-buttons">
+                    <button class="result-btn" id="btn-rematch">
+                        <span class="btn-icon">🔄</span>
+                        <span class="btn-label">REMATCH</span>
+                    </button>
+                    <button class="result-btn" id="btn-main-menu">
+                        <span class="btn-icon">🏠</span>
+                        <span class="btn-label">MAIN MENU</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- GRAVEYARD VIEWER MODAL                     -->
+        <!-- ============================================= -->
+        <div id="graveyard-modal" class="modal-overlay hidden">
+            <div class="modal-frame graveyard-modal">
+                <div class="modal-header">
+                    <div class="modal-title">GRAVEYARD</div>
+                    <div class="modal-subtitle" id="graveyard-owner-label">YOUR CARDS</div>
+                    <button class="modal-close" id="graveyard-close">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="graveyard-grid" id="graveyard-grid">
+                        <!-- Cards inserted dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-btn" id="graveyard-select-btn">SELECT CARD</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- DECK VIEWER MODAL                          -->
+        <!-- ========================================= -->
+        <div id="deck-modal" class="modal-overlay hidden">
+            <div class="modal-frame deck-modal">
+                <div class="modal-header">
+                    <div class="modal-title">YOUR DECK</div>
+                    <button class="modal-close" id="deck-close">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="deck-grid" id="deck-grid">
+                        <!-- Cards inserted dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- DIALOG / CONFIRMATION MODAL                -->
+        <!-- ========================================= -->
+        <div id="dialog-modal" class="modal-overlay hidden">
+            <div class="modal-frame dialog-modal">
+                <div class="modal-header">
+                    <div class="modal-title" id="dialog-title">CONFIRMATION</div>
+                </div>
+                <div class="modal-body">
+                    <div class="dialog-message" id="dialog-message">Are you sure?</div>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-btn confirm" id="dialog-confirm">YES</button>
+                    <button class="modal-btn cancel" id="dialog-cancel">NO</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- SETTINGS MODAL                             -->
+        <!-- ========================================= -->
+        <div id="settings-modal" class="modal-overlay hidden">
+            <div class="modal-frame settings-modal">
+                <div class="modal-header">
+                    <div class="modal-title">SETTINGS</div>
+                    <button class="modal-close" id="settings-close">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-section">
+                        <div class="settings-title">AUDIO</div>
+                        <div class="setting-row">
+                            <label>Master Volume</label>
+                            <input type="range" id="master-volume" min="0" max="100" value="80">
+                            <span class="setting-value" id="master-volume-value">80</span>
+                        </div>
+                        <div class="setting-row">
+                            <label>Music Volume</label>
+                            <input type="range" id="music-volume" min="0" max="100" value="60">
+                            <span class="setting-value" id="music-volume-value">60</span>
+                        </div>
+                        <div class="setting-row">
+                            <label>SFX Volume</label>
+                            <input type="range" id="sfx-volume" min="0" max="100" value="90">
+                            <span class="setting-value" id="sfx-volume-value">90</span>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <div class="settings-title">GAMEPLAY</div>
+                        <div class="setting-row">
+                            <label>Animation Speed</label>
+                            <select id="animation-speed">
+                                <option value="slow">Slow</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="fast">Fast</option>
+                                <option value="instant">Instant</option>
+                            </select>
+                        </div>
+                        <div class="setting-row">
+                            <label>Auto-Chain Resolution</label>
+                            <input type="checkbox" id="auto-chain" checked>
+                        </div>
+                        <div class="setting-row">
+                            <label>Show Damage Numbers</label>
+                            <input type="checkbox" id="show-damage" checked>
+                        </div>
+                        <div class="setting-row">
+                            <label>Show Phase Transitions</label>
+                            <input type="checkbox" id="show-phases" checked>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <div class="settings-title">GRAPHICS</div>
+                        <div class="setting-row">
+                            <label>Background Effects</label>
+                            <input type="checkbox" id="bg-effects" checked>
+                        </div>
+                        <div class="setting-row">
+                            <label>Particle Effects</label>
+                            <input type="checkbox" id="particle-effects" checked>
+                        </div>
+                        <div class="setting-row">
+                            <label>Card Glow Effects</label>
+                            <input type="checkbox" id="card-glow" checked>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- TUTORIAL OVERLAY                           -->
+        <!-- ========================================= -->
+        <div id="tutorial-overlay" class="screen-overlay hidden">
+            <div class="tutorial-content">
+                <div class="tutorial-frame">
+                    <div class="tutorial-header">
+                        <div class="tutorial-progress">Step <span id="tutorial-step">1</span> of <span id="tutorial-total">10</span></div>
+                        <div class="tutorial-title" id="tutorial-title">Welcome to Yu-Gi-Oh! HTML Edition</div>
+                    </div>
+                    <div class="tutorial-body">
+                        <div class="tutorial-image" id="tutorial-image"></div>
+                        <div class="tutorial-text" id="tutorial-text">
+                            This is a Speed Duel format. You start with 4000 LP and 4 cards in hand. Learn the basics before dueling Kaiba!
+                        </div>
+                    </div>
+                    <div class="tutorial-footer">
+                        <button class="tutorial-btn" id="tutorial-prev" disabled>PREVIOUS</button>
+                        <button class="tutorial-btn" id="tutorial-skip">SKIP</button>
+                        <button class="tutorial-btn primary" id="tutorial-next">NEXT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- DECK BUILDER MODAL                         -->
+        <!-- ========================================= -->
+        <div id="deckbuilder-modal" class="modal-overlay hidden">
+            <div class="modal-frame deckbuilder-modal">
+                <div class="modal-header">
+                    <div class="modal-title">DECK BUILDER</div>
+                    <button class="modal-close" id="deckbuilder-close">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="deckbuilder-layout">
+                        <div class="deckbuilder-library">
+                            <div class="library-header">
+                                <div class="library-title">CARD LIBRARY</div>
+                                <input type="text" class="library-search" id="library-search" placeholder="Search cards...">
+                            </div>
+                            <div class="library-grid" id="library-grid"></div>
+                        </div>
+                        <div class="deckbuilder-current">
+                            <div class="current-header">
+                                <div class="current-title">YOUR DECK</div>
+                                <div class="current-count"><span id="deck-current-count">0</span>/20</div>
+                            </div>
+                            <div class="current-grid" id="deckbuilder-deck-grid"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-btn" id="deckbuilder-save">SAVE DECK</button>
+                    <button class="modal-btn" id="deckbuilder-reset">RESET</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- NOTIFICATION TOASTS                        -->
+        <!-- ========================================= -->
+        <div id="toast-container" class="toast-container"></div>
+
+        <!-- ========================================= -->
+        <!-- PHASE TRANSITION OVERLAY                   -->
+        <!-- ========================================= -->
+        <div id="phase-transition" class="phase-transition-overlay hidden">
+            <div class="phase-transition-content">
+                <div class="phase-transition-text" id="phase-transition-text">DRAW PHASE</div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- DAMAGE NUMBER FLOATERS                     -->
+        <!-- ========================================= -->
+        <div id="damage-floaters" class="floaters-container"></div>
+
+        <!-- ========================================= -->
+        <!-- ATTACK ARROW / TARGETING LINE              -->
+        <!-- ========================================= -->
+        <svg id="attack-svg" class="attack-svg-overlay">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                    <polygon points="0 0, 10 3, 0 6" fill="#ff0000"/>
+                </marker>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            <line id="attack-line" x1="0" y1="0" x2="0" y2="0" stroke="#ff0000" stroke-width="3" stroke-dasharray="5,5" marker-end="url(#arrowhead)" filter="url(#glow)"/>
+        </svg>
+
+    </div> <!-- End game-container -->
+
+    <!-- ============================================= -->
+    <!-- AUDIO ELEMENTS (Preloaded)                    -->
+    <!-- ============================================= -->
+    <div id="audio-container" class="audio-hidden">
+        <audio id="sfx-draw" preload="auto">
+            <source src="data:audio/wav;base64,UklGGiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
+        </audio>
+        <audio id="sfx-summon" preload="auto"></audio>
+        <audio id="sfx-attack" preload="auto"></audio>
+        <audio id="sfx-damage" preload="auto"></audio>
+        <audio id="sfx-spell" preload="auto"></audio>
+        <audio id="sfx-victory" preload="auto"></audio>
+        <audio id="sfx-defeat" preload="auto"></audio>
+        <audio id="sfx-click" preload="auto"></audio>
+        <audio id="sfx-hover" preload="auto"></audio>
+        <audio id="bg-music" loop preload="auto"></audio>
     </div>
-    <div id="hand"></div>
-    <div class="ab" id="ab">
-      <button class="btn small gold hidden" id="bSkill">✨ مهارة</button>
-      <button class="btn small red" id="bBattle">⚔ القتال</button>
-      <button class="btn small dark" id="bEnd">⌛ إنهاء الدور</button>
-      <button class="btn small blue hidden" id="aDirect">💥 هجوم مباشر</button>
-      <button class="btn small dark hidden" id="bCancel">✕ إلغاء</button>
-      <button class="btn small hidden" id="bSumA">⚔ استدعاء هجومي</button>
-      <button class="btn small blue hidden" id="bSumD">🛡 تثبيت دفاعي</button>
-      <button class="btn small dark hidden" id="bSumC">✕</button>
-      <span class="trHint hidden" id="trHint"></span>
-      <button class="btn small hidden" id="bTrOk">✔ ضحِّ واستدعِ</button>
-      <button class="btn small dark hidden" id="bTrCancel">✕</button>
-      <button class="btn small red hidden" id="bSurr">🏳</button>
+
+    <!-- ============================================= -->
+    <!-- HIDDEN DATA / STATE HOLDER                     -->
+    <!-- ============================================= -->
+    <div id="game-state-holder" class="hidden" aria-hidden="true">
+        <div id="state-player-lp" data-value="4000"></div>
+        <div id="state-opponent-lp" data-value="4000"></div>
+        <div id="state-turn-number" data-value="1"></div>
+        <div id="state-current-phase" data-value="standby"></div>
+        <div id="state-turn-owner" data-value="player"></div>
+        <div id="state-normal-summon-used" data-value="false"></div>
+        <div id="state-battle-phase-entered" data-value="false"></div>
     </div>
-  </div>
-</div>
 
-<!-- القوانين -->
-<div class="screen" id="scrHelp" style="background:rgba(6,3,20,.72)">
-  <div class="panel"><button class="xbtn" data-back="scrTitle">✕</button><h2>📜 قوانين المبارزة</h2>
-    <div class="rules">
-      ⚔ كل مبارز يملك <b>4000 نقطة حياة</b> وورقة من 20 بطاقة. اسحب بطاقة كل دور.<br>
-      🃏 وحوش المستوى ١–٤ تُستدعى مباشرة. المستوى ٥–٦ تحتاج <b>تضحية</b>، والمستوى ٧+ تحتاج <b>ضحيتين</b>!<br>
-      🛡 التثبيت الدفاعي مقلوبًا — يُكشف عند الهجوم عليه. الدفاعي لا يهاجم.<br>
-      🌀 التعاويذ فورية. <b>الفخاخ تُثبّت مقلوبة</b> وتُفعَّل لحظة الهجوم/الاستدعاء — بيدك القرار!<br>
-      ⚡ وحش هجومي ضد هجومي = الفرق ضررًا. ضد دفاعي = لا ضرر (إلا <b>الثاقبة</b> 🗡). لا وحوش؟ <b>هجوم مباشر</b>!<br>
-      ✨ لكل مبارز <b>مهارة واحدة</b> تُستخدم مرة عند تحقق شرطها.<br>
-      🏆 نفاد الأوراق = هزيمة. في النهاية تحصل على تقييم C/B/A!
+    <!-- ============================================= -->
+    <!-- DEVELOPER / DEBUG PANEL (Toggle with ` key)    -->
+    <!-- ============================================= -->
+    <div id="debug-panel" class="debug-container hidden">
+        <div class="debug-header">
+            <span class="debug-title">DEV CONSOLE v3.8</span>
+            <button class="debug-close" id="debug-close">✕</button>
+        </div>
+        <div class="debug-content">
+            <div class="debug-section">
+                <div class="debug-title">LP MANIPULATION</div>
+                <button class="debug-btn" data-debug="player-lp-1000">Player -1000 LP</button>
+                <button class="debug-btn" data-debug="opponent-lp-1000">Opponent -1000 LP</button>
+                <button class="debug-btn" data-debug="heal-all">Heal All LP</button>
+            </div>
+            <div class="debug-section">
+                <div class="debug-title">CARD MANIPULATION</div>
+                <button class="debug-btn" data-debug="draw-1">Draw 1</button>
+                <button class="debug-btn" data-debug="draw-5">Draw 5</button>
+                <button class="debug-btn" data-debug="add-dark-magician">Add Dark Magician</button>
+                <button class="debug-btn" data-debug="add-blue-eyes">Add Blue-Eyes</button>
+            </div>
+            <div class="debug-section">
+                <div class="debug-title">GAME STATE</div>
+                <button class="debug-btn" data-debug="skip-to-battle">Skip to Battle</button>
+                <button class="debug-btn" data-debug="end-turn">End Turn</button>
+                <button class="debug-btn" data-debug="reset-game">Reset Game</button>
+                <button class="debug-btn" data-debug="force-win">Force Win</button>
+            </div>
+            <div class="debug-section">
+                <div class="debug-title">LOG OUTPUT</div>
+                <div class="debug-log" id="debug-log"></div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- البطاقات -->
-<div class="screen" id="scrColl" style="background:rgba(6,3,20,.72)">
-  <div class="panel"><button class="xbtn" data-back="scrTitle">✕</button><h2>📖 كل البطاقات</h2><div class="cgrid" id="collGrid"></div></div>
-</div>
+    <!-- ============================================= -->
+    <!-- KEYBOARD SHORTCUTS TOOLTIP                     -->
+    <!-- ============================================= -->
+    <div id="shortcuts-tooltip" class="tooltip-container hidden">
+        <div class="tooltip-frame">
+            <div class="tooltip-title">KEYBOARD SHORTCUTS</div>
+            <div class="shortcut-list">
+                <div class="shortcut-row">
+                    <kbd>SPACE</kbd>
+                    <span>Next Phase / End Turn</span>
+                </div>
+                <div class="shortcut-row">
+                    <kbd>ESC</kbd>
+                    <span>Cancel Action</span>
+                </div>
+                <div class="shortcut-row">
+                    <kbd>D</kbd>
+                    <span>Draw Card (Debug)</span>
+                </div>
+                <div class="shortcut-row">
+                    <kbd>`</kbd>
+                    <span>Toggle Debug Panel</span>
+                </div>
+                <div class="shortcut-row">
+                    <kbd>G</kbd>
+                    <span>Open Graveyard</span>
+                </div>
+                <div class="shortcut-row">
+                    <kbd>M</kbd>
+                    <span>Toggle Music</span>
+                </div>
+                <div class="shortcut-row">
+                    <kbd>1-4</kbd>
+                    <span>Select Card in Hand</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- النهاية -->
-<div class="screen" id="scrEnd">
-  <div id="endRays"></div>
-  <div class="end-title" id="endTitle">النصر!</div>
-  <div class="rankBox"><div class="rankL A" id="rankL">A</div><div class="stars" id="rankStars">✦✦✦</div></div>
-  <div class="endStats" id="endStats"></div>
-  <div class="hint" id="endSub"></div>
-  <div class="menu-btns">
-    <button class="btn big gold pulse" id="bAgain">⚔ مبارزة جديدة</button>
-    <button class="btn dark" id="bTitle2">🏠 القائمة</button>
-  </div>
-</div>
+    <!-- ============================================= -->
+    <!-- CURSOR FOLLOWER (for dramatic effect)          -->
+    <!-- ============================================= -->
+    <div id="cursor-follower" class="cursor-follower"></div>
+    <div id="cursor-follower-inner" class="cursor-follower-inner"></div>
 
-<!-- نافذة الفخ -->
-<div class="screen" id="ask">
-  <div class="askP">
-    <h3 id="askT">فخ!</h3>
-    <p id="askD"></p>
-    <div class="row2"><button class="btn small" id="askYes">⚡ تفعيل</button><button class="btn small dark" id="askNo">تمرير</button></div>
-    <div class="askBarW"><div id="askBar"></div></div>
-  </div>
-</div>
+    <!-- ============================================= -->
+    <!-- SCRIPTS                                        -->
+    <!-- ============================================= -->
+    <script src="script.js" defer></script>
 
-<div id="zoom"><div id="zoomCard"></div><div class="ztxt" id="zoomTxt"></div></div>
-
-<script src="js/data.js"></script>
-<script src="js/audio.js"></script>
-<script src="js/fx.js"></script>
-<script src="js/game.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/main.js"></script>
 </body>
 </html>
